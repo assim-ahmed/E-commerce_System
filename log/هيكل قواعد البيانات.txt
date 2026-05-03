@@ -1,0 +1,215 @@
+ هيكل قاعدة البيانات الحالية (Database Schema)
+
+### **إحصائيات عامة:**
+
+| العنصر | العدد |
+|--------|-------|
+| عدد الجداول | 15 جدول |
+| عدد العلاقات (Foreign Keys) | 17 علاقة |
+| جاهز لعدد المنتجات | 100,000+ |
+| نظام التخزين | MySQL |
+
+---
+
+### **4.1 قائمة الجداول (Tables List)**
+
+| # | اسم الجدول | الغرض |
+|---|------------|-------|
+| 1 | `users` | تخزين بيانات المستخدمين (Admin + Customers) |
+| 2 | `addresses` | عناوين المستخدمين (للتوصيل والفواتير) |
+| 3 | `categories` | تصنيفات المنتجات (منتج واحد ينتمي لتصنيف واحد) |
+| 4 | `brands` | ماركات المنتجات |
+| 5 | `products` | المنتجات الأساسية |
+| 6 | `product_variants` | متغيرات المنتج (لون، مقاس، سعة) |
+| 7 | `coupons` | كوبونات الخصم (نظام بسيط) |
+| 8 | `carts` | سلة المشتريات (تدعم الزوار والمسجلين) |
+| 9 | `cart_items` | محتويات سلة المشتريات |
+| 10 | `orders` | الطلبات |
+| 11 | `order_items` | محتويات الطلبات (بنسخة من البيانات وقت الشراء) |
+| 12 | `reviews` | تقييمات المستخدمين للمنتجات |
+| 13 | `inventory_logs` | سجل حركة المخزون (دخول/خروج) |
+| 14 | `notifications` | إشعارات المستخدمين |
+| 15 | `failed_jobs` | جدول Laravel الافتراضي للمهام الفاشلة |
+
+---
+
+### **4.2 تفاصيل الجداول**
+
+#### **جدول users**
+| العمود | النوع | ملاحظات |
+|--------|------|---------|
+| id | PK | |
+| name | string | |
+| email | string | unique |
+| password | string | |
+| role | enum | admin / customer |
+| is_active | boolean | default true |
+
+#### **جدول addresses**
+| العمود | النوع | ملاحظات |
+|--------|------|---------|
+| id | PK | |
+| user_id | FK → users.id | |
+| address_line_1 | string | |
+| city | string | |
+| country | string | |
+| is_default | boolean | |
+
+#### **جدول categories**
+| العمود | النوع | ملاحظات |
+|--------|------|---------|
+| id | PK | |
+| name | string | |
+| slug | string | unique |
+| description | string  |  nullable
+
+
+#### **جدول brands**
+| العمود | النوع |
+|--------|------|
+| id | PK |
+| name | string |
+| slug | string (unique) |
+
+#### **جدول products**
+| العمود | النوع | ملاحظات |
+|--------|------|---------|
+| id | PK | |
+| name | string | |
+| slug | string (unique) | |
+| description | string | |
+| short description | string | |
+| category_id | FK → categories.id | |
+| brand_id | FK → brands.id | |
+| base_price | decimal(12,2) | |
+| compare_price | decimal(12,2) | |
+| stock_quantity | integer | |
+| low_stock_threshold | integer | default 5 |
+| is_low_stock | boolean | محسوب آلياً |
+| sku | string (unique) | |
+| is_featured | boolean | |
+| views_count | integer| |
+| images | json | |
+| specifications | json | مواصفات مرنة |
+
+#### **جدول product_variants**
+| العمود | النوع | ملاحظات |
+|--------|------|---------|
+| id | PK | |
+| product_id | FK → products.id | |
+| name | string | مثال: "أحمر - XL" |
+| attributes | json | {"color":"red", "size":"XL"} |
+| price_adjustment | decimal | +/- عن السعر الأساسي |
+| stock_quantity | integer | |
+
+#### **جدول coupons**
+| العمود | النوع |
+|--------|------|
+| id | PK |
+| code | string (unique) |
+| type | enum (fixed / percentage) |
+| value | decimal |
+| minimum_order_amount | decimal (nullable) |
+| start_date | date |
+| end_date | date |
+
+#### **جدول carts**
+| العمود | النوع | ملاحظات |
+|--------|------|---------|
+| id | PK | |
+| user_id | FK → users.id | nullable (للمسجلين) |
+| cookie_id | string | unique (للزوار) |
+
+#### **جدول cart_items**
+| العمود | النوع |
+|--------|------|
+| id | PK |
+| cart_id | FK → carts.id |
+| product_id | FK → products.id |
+| product_variant_id | FK → product_variants.id (nullable) |
+| quantity | integer |
+| price_at_time | decimal |
+
+#### **جدول orders**
+| العمود | النوع |
+|--------|------|
+| id | PK |
+| order_number | string (unique) |
+| user_id | FK → users.id |
+| address_id | FK → addresses.id |
+| status | enum |
+| total | decimal |
+| coupon_code | string (nullable) |
+
+#### **جدول order_items**
+| العمود | النوع | ملاحظات |
+|--------|------|---------|
+| id | PK |
+| order_id | FK → orders.id |
+| product_variant_id | FK →product_variant.id |
+| product_id | FK → product.id |
+| product_name_snapshot | string | نسخة وقت الشراء |
+| price_snapshot | decimal | نسخة وقت الشراء |
+| quantity | integer| |
+| total| decimal|
+
+#### **جدول reviews**
+| العمود | النوع | ملاحظات |
+|--------|------|---------|
+| id | PK |
+| user_id | FK → users.id | |
+| product_id | FK → products.id | |
+| order_id | FK → orders.id | للتأكد من الشراء |
+| rating | tinyint (1-5) | |
+| comment | text | |
+| image | json| |
+| is_approved | boolean | |
+
+#### **جدول inventory_logs**
+| العمود | النوع |
+|--------|------|
+| id | PK |
+| product_id | FK → products.id |
+| product_variant_id | FK → product_variant.id |
+| type | enum (purchase/sale/return/adjustment) |
+| quantity_change | integer |
+| quantity_before | integer |
+| quantity_after | integer |
+
+#### **جدول notifications**
+| العمود | النوع |
+|--------|------|
+| id | PK |
+| user_id | FK → users.id |
+| title | string |
+| message | text |
+| is_read | boolean |
+
+---
+
+### **4.3 العلاقات بين الجداول (Relationships Map)**
+users
+├── addresses (1 : many)
+├── carts (1 : 1)
+├── orders (1 : many)
+├── reviews (1 : many)
+└── notifications (1 : many)
+
+categories
+└── products (1 : many) [منتج واحد في تصنيف واحد]
+
+brands
+└── products (1 : many)
+
+products
+├── product_variants (1 : many)
+├── cart_items (1 : many)
+├── order_items (1 : many)
+└── reviews (1 : many)
+
+carts
+└── cart_items (1 : many)
+
+orders
+├── order_items (1 : many)
+└── reviews (1 : many)
