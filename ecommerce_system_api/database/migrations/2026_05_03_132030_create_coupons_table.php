@@ -20,11 +20,10 @@ return new class extends Migration
             $table->decimal('minimum_order_amount', 12, 2)->nullable();
             $table->date('start_date');
             $table->date('end_date');
-            $table->boolean('is_active')->default(true);
             $table->timestamps();
 
             $table->index('code');
-            $table->index(['is_active', 'start_date', 'end_date']);
+            $table->index(['start_date', 'end_date']);
         });
     }
 

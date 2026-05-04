@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('address_line_1');
             $table->string('city');
             $table->string('country');
-            $table->string('phone')->nullable();
             $table->boolean('is_default')->default(false);
             $table->timestamps();
 

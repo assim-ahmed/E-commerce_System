@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained();
             $table->foreignId('product_variant_id')->nullable()->constrained();
             $table->string('product_name_snapshot');  // نسخة الاسم وقت الشراء
-            $table->string('product_sku_snapshot');
             $table->decimal('price_snapshot', 12, 2);  // السعر وقت الشراء
             $table->integer('quantity');
             $table->decimal('total', 12, 2);
