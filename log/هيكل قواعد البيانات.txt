@@ -43,6 +43,7 @@
 | email | string | unique |
 | password | string | |
 | role | enum | admin / customer |
+| remeber_token| string | |
 | is_active | boolean | default true |
 
 #### **جدول addresses**
