@@ -6,6 +6,13 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+// ✅ لازم تستدعي كل الموديلات اللي هتستخدمها في العلاقات
+use App\Models\Address;
+use App\Models\Cart;
+use App\Models\Order;
+use App\Models\Review;
+use App\Models\Notification;
+
 class User extends Authenticatable
 {
     use HasApiTokens, Notifiable;
@@ -26,27 +33,27 @@ class User extends Authenticatable
     // Relationships
     public function addresses()
     {
-        return $this->hasMany(Address::class);
+        return $this->hasMany(Address::class);  // ← محتاج use App\Models\Address
     }
 
     public function cart()
     {
-        return $this->hasOne(Cart::class);
+        return $this->hasOne(Cart::class);      // ← محتاج use App\Models\Cart
     }
 
     public function orders()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::class);    // ← محتاج use App\Models\Order
     }
 
     public function reviews()
     {
-        return $this->hasMany(Review::class);
+        return $this->hasMany(Review::class);   // ← محتاج use App\Models\Review
     }
 
     public function notifications()
     {
-        return $this->hasMany(Notification::class);
+        return $this->hasMany(Notification::class); // ← محتاج use App\Models\Notification
     }
 
     // Scopes
