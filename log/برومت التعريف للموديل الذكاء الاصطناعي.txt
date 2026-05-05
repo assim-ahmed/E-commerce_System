@@ -216,7 +216,7 @@ orders └── order_items (1 : many)
 12	Admin Dashboard API	📋 مخطط
 🔧 5. التقنيات المستخدمة
 التقنية	الإصدار/الاستخدام
-Laravel	الإصدار الأحدث (11 أو أعلى)
+Laravel	الإصدار الأحدث (12 أو أعلى)
 PHP	8.2+
 MySQL	8.0+
 Authentication	Laravel Sanctum

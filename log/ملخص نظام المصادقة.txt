@@ -1,0 +1,198 @@
+# E-commerce API - Authentication System Complete
+
+## 🎯 Project Overview
+RESTful API for single-vendor e-commerce platform built with Laravel 11/12, PHP 8.2+, MySQL.
+
+## ✅ Completed Features (Current State)
+
+### Authentication System (100% Complete)
+
+#### 1. User Management
+- Users table with fields: id, name, email, password, role (admin/customer), is_active (boolean), email_verified_at, timestamps
+- Default role on registration: 'customer'
+- Default is_active status: true
+- Password hashed using bcrypt
+
+#### 2. API Endpoints (7 Total)
+| Method | Endpoint | Description | Middleware |
+|--------|----------|-------------|-------------|
+| POST | /api/register | Register new customer | None |
+| POST | /api/login | Login & get token | None |
+| POST | /api/logout | Logout & revoke token | auth:sanctum, verified |
+| GET | /api/profile | Get user profile | auth:sanctum, verified |
+| PUT | /api/profile | Update profile (name, email, password) | auth:sanctum, verified |
+| POST | /api/email/verification-notification | Resend verification email | auth:sanctum |
+| GET | /api/verify-email/{id}/{hash} | Verify email | signed URL |
+
+#### 3. Authentication Flow
+1. User registers → Creates account with email_verified_at = null
+2. System sends verification email
+3. User cannot login until email verified
+4. User clicks verification link → email_verified_at set to current timestamp
+5. User can now login → Receives Bearer token
+6. On login, all existing user tokens are deleted (single session only)
+7. On logout, current token is revoked
+
+#### 4. Architecture Pattern
+**Service-Repository Pattern implemented:**
+app/
+├── Contracts/
+│ ├── Repositories/
+│ │ └── UserRepositoryInterface.php
+│ └── Services/
+│ └── AuthServiceInterface.php
+├── Repositories/
+│ ├── BaseRepository.php
+│ └── UserRepository.php
+├── Services/
+│ └── AuthService.php
+├── Http/
+│ ├── Controllers/Api/
+│ │ └── AuthController.php
+│ └── Requests/Auth/
+│ ├── RegisterRequest.php
+│ ├── LoginRequest.php
+│ └── UpdateProfileRequest.php
+└── Models/
+└── User.php (modified)
+
+text
+
+#### 5. Security Features
+- Laravel Sanctum for API token authentication
+- Email verification required before access to protected routes
+- Rate limiting: 100 requests per minute
+- Password confirmation validation
+- Unique email constraint
+- Role-based access (admin middleware available)
+- Single session per user (old tokens deleted on new login)
+
+#### 6. Response Format (Standard JSON)
+```json
+{
+    "success": true/false,
+    "data": {},
+    "message": "string",
+    "errors": {}
+}
+7. Validation Rules
+RegisterRequest:
+
+name: required, string, max:255
+
+email: required, email, unique:users
+
+password: required, min:8, confirmed
+
+LoginRequest:
+
+email: required, email
+
+password: required, string
+
+UpdateProfileRequest:
+
+name: sometimes, string, max:255
+
+email: sometimes, email, unique:users (ignore current user)
+
+password: sometimes, min:8, confirmed
+
+8. Dependencies Installed
+bash
+composer require laravel/sanctum
+# Sanctum for API authentication
+9. Environment Configuration Required
+env
+# Database
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database
+DB_USERNAME=root
+DB_PASSWORD=
+
+# Mail (for verification emails)
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your_username
+MAIL_PASSWORD=your_password
+MAIL_ENCRYPTION=tls
+
+# Queue (for email sending)
+QUEUE_CONNECTION=database
+
+# Sanctum
+SANCTUM_STATEFUL_DOMAINS=localhost,localhost:3000,127.0.0.1
+
+10 . Admin User (from Seeder)
+Email: admin@example.com
+
+Password: password
+
+Role: admin
+
+🔧 Technical Stack
+Laravel: 11 or 12
+
+PHP: 8.2+
+
+MySQL: 8.0+
+
+Authentication: Laravel Sanctum
+
+Queue: Database driver (can be changed to Redis/Beanstalkd later)
+
+Mail: Configurable (Mailtrap recommended for development)
+
+🧪 Testing the API
+Postman collection structure:
+
+Register → Create user
+
+Check email/logs for verification link
+
+Click verification link (or use tinker to mark verified)
+
+Login → Get token
+
+Use token as Bearer token for protected routes
+
+Test profile update and logout
+
+📝 What's NOT yet implemented (Future Phases)
+Categories & Brands management
+
+Products CRUD with search/filter
+
+Shopping cart system
+
+Orders system
+
+Coupons/Discounts
+
+Reviews & Ratings
+
+Inventory management with logs
+
+Notifications system
+
+Admin dashboard APIs
+
+⚠️ Important Notes for AI Assistant
+No SoftDeletes in any model (database has no deleted_at column)
+
+Follow existing Repository-Service pattern for new features
+
+All API responses must follow the standard JSON format
+
+Use Laravel Sanctum, not Passport or sessions
+
+Consider performance for 100,000+ products (indexes, eager loading)
+
+Don't modify existing authentication flow
+
+Email verification is MANDATORY before accessing protected routes
+
+Single session per user (tokens revoked on new login)
