@@ -13,22 +13,7 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
         parent::__construct($model);
     }
 
-    public function all(): Collection
-    {
-        return $this->model->withCount('products')->get();
-    }
-
-    public function find(int $id): ?Category
-    {
-        return $this->model->find($id);
-    }
-
-    public function create(array $data): Category
-    {
-        return $this->model->create($data);
-    }
-
-    public function findBySlug(string $slug): ?Category
+    public function findBySlug(string $slug)
     {
         return $this->findBy('slug', $slug);
     }

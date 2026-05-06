@@ -2,9 +2,10 @@
 
 namespace App\Repositories;
 
-use App\Contracts\Repositories\RepositoryInterface;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
+use App\Contracts\Repositories\RepositoryInterface;
 
 abstract class BaseRepository implements RepositoryInterface
 {
@@ -20,12 +21,12 @@ abstract class BaseRepository implements RepositoryInterface
         return $this->model->all();
     }
 
-    public function find(int $id): ?Model
+    public function find(int $id)
     {
         return $this->model->find($id);
     }
 
-    public function create(array $data): Model
+    public function create(array $data)
     {
         return $this->model->create($data);
     }
@@ -48,7 +49,7 @@ abstract class BaseRepository implements RepositoryInterface
         return $model->delete();
     }
 
-    public function findBy(string $column, $value): ?Model
+    public function findBy(string $column, $value)
     {
         return $this->model->where($column, $value)->first();
     }
