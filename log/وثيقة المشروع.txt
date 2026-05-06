@@ -1,0 +1,203 @@
+# 📋 E-commerce API - Project Notation
+
+## 🎯 Project Overview
+RESTful API for a single-vendor e-commerce platform built with Laravel 11/12, PHP 8.2+, and MySQL.
+
+---
+
+## ✅ Completed Features (as of 06-05-2026)
+
+### 1. Authentication System (100%)
+| API | Method | Endpoint | Protection |
+|-----|--------|----------|------------|
+| Register | POST | `/api/register` | Public |
+| Login | POST | `/api/login` | Public |
+| Logout | POST | `/api/logout` | Auth + Verified |
+| Get Profile | GET | `/api/profile` | Auth + Verified |
+| Update Profile | PUT | `/api/profile` | Auth + Verified |
+| Resend Verification | POST | `/api/email/verification-notification` | Auth |
+| Verify Email | GET | `/api/verify-email/{id}/{hash}` | Signed URL |
+
+**Features:**
+- Email verification required before login
+- Single session per user (old tokens revoked on new login)
+- Role-based (Admin / Customer)
+- Admin middleware for protected routes
+- Rate limiting: 100 requests/minute
+
+### 2. Categories Management (100%)
+| API | Method | Endpoint | Access |
+|-----|--------|----------|--------|
+| List Categories | GET | `/api/categories` | Public |
+| Get Category by ID | GET | `/api/categories/{id}` | Public |
+| Get Category by Slug | GET | `/api/categories/slug/{slug}` | Public |
+| Create Category | POST | `/api/categories` | Admin only |
+| Update Category | PUT | `/api/categories/{id}` | Admin only |
+| Delete Category | DELETE | `/api/categories/{id}` | Admin only |
+
+**Features:**
+- Auto-generate slug from name if not provided
+- Cascade protection (cannot delete category with products)
+- Product count included in response
+
+### 3. Brands Management (100%)
+| API | Method | Endpoint | Access |
+|-----|--------|----------|--------|
+| List Brands | GET | `/api/brands` | Public |
+| Get Brand by ID | GET | `/api/brands/{id}` | Public |
+| Get Brand by Slug | GET | `/api/brands/slug/{slug}` | Public |
+| Create Brand | POST | `/api/brands` | Admin only |
+| Update Brand | PUT | `/api/brands/{id}` | Admin only |
+| Delete Brand | DELETE | `/api/brands/{id}` | Admin only |
+
+**Features:**
+- Auto-generate slug from name if not provided
+- Cascade protection (cannot delete brand with products)
+- Product count included in response
+
+---
+
+## 🏗️ Architecture Pattern
+
+### Service-Repository Pattern Structure:
+Controller → Service Interface → Service Implementation
+↓
+Repository Interface
+↓
+Repository Implementation
+↓
+Model (Database)
+
+### Directory Structure:
+app/
+├── Contracts/
+│   ├── Repositories/
+│   │   ├── RepositoryInterface.php (Base)
+│   │   ├── UserRepositoryInterface.php
+│   │   ├── CategoryRepositoryInterface.php
+│   │   └── BrandRepositoryInterface.php
+│   └── Services/
+│       ├── AuthServiceInterface.php
+│       ├── CategoryServiceInterface.php
+│       └── BrandServiceInterface.php
+│
+├── Repositories/
+│   ├── BaseRepository.php
+│   ├── UserRepository.php
+│   ├── CategoryRepository.php
+│   └── BrandRepository.php
+│
+├── Services/
+│   ├── AuthService.php
+│   ├── CategoryService.php
+│   └── BrandService.php
+│
+├── Http/
+│   ├── Controllers/Api/
+│   │   ├── AuthController.php
+│   │   ├── CategoryController.php
+│   │   └── BrandController.php
+│   ├── Requests/
+│   │   ├── Auth/
+│   │   │   ├── LoginRequest.php
+│   │   │   ├── RegisterRequest.php
+│   │   │   └── UpdateProfileRequest.php
+│   │   ├── Category/
+│   │   │   └── CategoryRequest.php
+│   │   └── Brand/
+│   │       └── BrandRequest.php
+│   └── Resources/
+│       ├── CategoryResource.php
+│       └── BrandResource.php
+│
+├── Models/
+│   ├── User.php                    ✅
+│   ├── Product.php                 ✅
+│   ├── Category.php                ✅
+│   ├── Brand.php                   ✅
+│   ├── ProductVariant.php          ✅
+│   ├── Address.php                 ✅
+│   ├── Coupon.php                  ✅
+│   ├── Cart.php                    ✅
+│   ├── CartItem.php                ✅
+│   ├── Order.php                   ✅
+│   ├── OrderItem.php               ✅
+│   ├── Review.php                  ✅
+│   ├── InventoryLog.php            ✅
+│   └── Notification.php            ✅
+│
+├── Http/Middleware/
+│   └── AdminMiddleware.php
+│
+├── database/
+│   ├── migrations/                 ✅ (15 tables)
+│   └── seeders/
+│       ├── AdminUserSeeder.php
+│       └── CategoryBrandSeeder.php
+│
+└── routes/
+    └── api.php                     ✅ (All routes configured)
+
+## Database Schema (Complete - 15 Tables)
+#	Table	Model	Status	Description
+1	users	User.php	✅	User accounts (admin/customer)
+2	categories	Category.php	✅	Product categories
+3	brands	Brand.php	✅	Product brands
+4	products	Product.php	✅	Main products table
+5	product_variants	ProductVariant.php	✅	Product variations
+6	addresses	Address.php	✅	User addresses
+7	coupons	Coupon.php	✅	Discount coupons
+8	carts	Cart.php	✅	Shopping carts
+9	cart_items	CartItem.php	✅	Cart contents
+10	orders	Order.php	✅	Customer orders
+11	order_items	OrderItem.php	✅	Order details
+12	reviews	Review.php	✅	Product reviews
+13	inventory_logs	InventoryLog.php	✅	Stock movement logs
+14	notifications	Notification.php	✅	User notifications
+15	failed_jobs	-	✅	Laravel default
+
+
+## 🔧 Technical Stack
+
+| Component | Technology |
+|-----------|------------|
+| Backend Framework | Laravel 11/12 |
+| PHP Version | 8.2+ |
+| Database | MySQL 8.0+ |
+| Authentication | Laravel Sanctum |
+| API Style | RESTful |
+| Architecture | Service-Repository Pattern |
+
+---
+
+## 📦 API Response Format
+
+All endpoints return consistent JSON:
+
+```json
+{
+    "success": true|false,
+    "data": {},
+    "message": "string",
+    "errors": {}
+}
+Success Response (200):
+json
+{
+    "success": true,
+    "data": {...},
+    "message": "Operation successful"
+}
+Error Response (4xx/5xx):
+json
+{
+    "success": false,
+    "data": null,
+    "message": "Error description",
+    "errors": {}
+}
+🔐 Default Admin Account (Seeder)
+Field	Value
+Email	admin@example.com
+Password	password
+Role	admin

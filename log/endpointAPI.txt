@@ -1,0 +1,26 @@
+ Completed APIs (13 Endpoints)
+Authentication (7 endpoints)
+Method	Endpoint	Protection
+POST	/api/register	Public
+POST	/api/login	Public
+POST	/api/logout	Auth + Verified
+GET	/api/profile	Auth + Verified
+PUT	/api/profile	Auth + Verified
+POST	/api/email/verification-notification	Auth
+GET	/api/verify-email/{id}/{hash}	Signed URL
+Categories (6 endpoints)
+Method	Endpoint	Access
+GET	/api/categories	Public
+GET	/api/categories/{id}	Public
+GET	/api/categories/slug/{slug}	Public
+POST	/api/categories	Admin only
+PUT	/api/categories/{id}	Admin only
+DELETE	/api/categories/{id}	Admin only
+Brands (6 endpoints)
+Method	Endpoint	Access
+GET	/api/brands	Public
+GET	/api/brands/{id}	Public
+GET	/api/brands/slug/{slug}	Public
+POST	/api/brands	Admin only
+PUT	/api/brands/{id}	Admin only
+DELETE	/api/brands/{id}	Admin only

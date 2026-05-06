@@ -1,12 +1,12 @@
 <?php
-// app/Repositories/BaseRepository.php
 
 namespace App\Repositories;
 
+use App\Contracts\Repositories\RepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 
-abstract class BaseRepository
+abstract class BaseRepository implements RepositoryInterface
 {
     protected Model $model;
 
@@ -15,9 +15,9 @@ abstract class BaseRepository
         $this->model = $model;
     }
 
-    public function all(array $columns = ['*']): Collection
+    public function all(): Collection
     {
-        return $this->model->get($columns);
+        return $this->model->all();
     }
 
     public function find(int $id): ?Model
@@ -33,24 +33,23 @@ abstract class BaseRepository
     public function update(int $id, array $data): bool
     {
         $model = $this->find($id);
-        if (!$model) return false;
+        if (!$model) {
+            return false;
+        }
         return $model->update($data);
     }
 
     public function delete(int $id): bool
     {
         $model = $this->find($id);
-        if (!$model) return false;
+        if (!$model) {
+            return false;
+        }
         return $model->delete();
     }
 
     public function findBy(string $column, $value): ?Model
     {
         return $this->model->where($column, $value)->first();
-    }
-
-    public function findAllBy(string $column, $value): Collection
-    {
-        return $this->model->where($column, $value)->get();
     }
 }
