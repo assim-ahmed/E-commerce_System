@@ -3,7 +3,7 @@
 namespace App\Contracts\Repositories;
 use Illuminate\Database\Eloquent\Collection;
 
-interface RepositoryInterface
+interface RepositoryInterface 
 {
     public function all(): Collection;
     public function find(int $id);
