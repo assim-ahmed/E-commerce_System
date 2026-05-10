@@ -1,0 +1,142 @@
+📋 ملخص ما تم إنجازه حتى الآن
+✅ 1. Products API Module (كاملة)
+العنصر	التفاصيل
+عدد الـ Endpoints	9 Endpoints (4 Public + 5 Admin)
+النمط المعماري	Service - Repository Pattern
+الـ Interfaces	ProductRepositoryInterface, ProductServiceInterface
+الـ Controllers	ProductController
+الـ Requests	ProductRequest (يدعم Create/Update)
+الـ Resources	ProductResource, ProductCollection
+الـ Middleware	AdminMiddleware
+الـ Seeders	ProductSeeder (70+ منتج تجريبي)
+✅ 2. الميزات المنفذة في Products API
+الميزة	الحالة
+قائمة المنتجات مع Pagination	✅
+بحث نصي (search)	✅
+فلترة بتصنيف (category_id)	✅
+فلترة بماركة (brand_id)	✅
+فلترة بالسعر (min_price, max_price)	✅
+فلترة المنتجات المميزة (is_featured)	✅
+ترتيب (sort_by, sort_order)	✅
+عرض منتج بالـ ID	✅
+عرض منتج بالـ Slug	✅
+إضافة منتج (Admin)	✅
+تحديث منتج (Admin)	✅
+حذف منتج (Admin)	✅
+تحديث المخزون مع تسجيل حركة	✅
+عرض المنتجات قليلة المخزون (Admin)	✅
+دعم متغيرات المنتج (variants)	✅
+دعم الصور والمواصفات (JSON)	✅
+منتجات ذات صلة (related products)	✅
+✅ 3. الملفات التي تم إنشاؤها
+text
+app/Contracts/Repositories/ProductRepositoryInterface.php
+app/Contracts/Services/ProductServiceInterface.php
+app/Repositories/ProductRepository.php
+app/Services/ProductService.php
+app/Http/Controllers/Api/ProductController.php
+app/Http/Requests/Product/ProductRequest.php
+app/Http/Resources/Product/ProductResource.php
+app/Http/Resources/Product/ProductCollection.php
+app/Http/Middleware/AdminMiddleware.php
+database/seeders/ProductSeeder.php
+products-api-documentation.txt (ملف شرح)
+✅ 4. الملفات التي تم تعديلها
+text
+routes/api.php
+app/Providers/AppServiceProvider.php
+bootstrap/app.php
+ملف شرح API الرئيسي
+✅ 5. إجمالي الـ APIs بعد الإضافة
+Module	عدد الـ Endpoints
+Authentication	7
+Categories	6
+Brands	6
+Products	9
+المجموع الكلي	28
+🚀 الخطوة التالية (ما المطلوب من AI)
+🎯 المطلوب: بناء Shopping Cart API (سلة المشتريات)
+📋 تفاصيل Cart API المطلوبة
+#	الميزة	الوصف
+1	إضافة إلى السلة	Guest (cookie) أو Registered User (user_id)
+2	عرض السلة	عرض محتويات السلة مع حساب الإجمالي
+3	تحديث الكمية	تغيير كمية منتج في السلة
+4	حذف من السلة	إزالة منتج من السلة
+5	تفريغ السلة	حذف كل المنتجات من السلة
+6	تطبيق كوبون	إضافة كوبون خصم على السلة
+📊 الجداول المرتبطة بـ Cart
+الجدول	الدور
+carts	تخزين بيانات السلة (user_id, cookie_id)
+cart_items	تخزين منتجات السلة (product_id, variant_id, quantity, price_at_time)
+coupons	كوبونات الخصم
+products	بيانات المنتجات
+product_variants	متغيرات المنتج
+🎯 الـ Endpoints المطلوبة لـ Cart API
+Method	Endpoint	الوصف	الصلاحية
+GET	/api/cart	عرض السلة	Guest/User
+POST	/api/cart/items	إضافة منتج إلى السلة	Guest/User
+PUT	/api/cart/items/{id}	تحديث كمية منتج في السلة	Guest/User
+DELETE	/api/cart/items/{id}	حذف منتج من السلة	Guest/User
+DELETE	/api/cart/clear	تفريغ السلة بالكامل	Guest/User
+POST	/api/cart/apply-coupon	تطبيق كوبون خصم	Guest/User
+DELETE	/api/cart/remove-coupon	إزالة الكوبون	Guest/User
+📝 نقاط مهمة يجب مراعاتها في Cart API
+النقطة	التفاصيل
+نظام المصادقة	استخدام Laravel Sanctum
+الزوار (Guest)	استخدام cookie_id المخزن في الـ cookie
+المستخدمين المسجلين	استخدام user_id
+سعر المنتج	تخزين price_at_time عند الإضافة (لحماية السعر من التغيير لاحقاً)
+المخزون	التأكد من توفر المخزون قبل الإضافة
+المتغيرات	دعم إضافة منتج بمتغير محدد (لون، مقاس)
+نفس المنتج	إذا أضاف نفس المنتج مرتين، يتم زيادة الكمية
+الكوبونات	التحقق من صلاحية الكوبون (تاريخ، أقل مبلغ، غير مستخدم)
+🎯 الـ Response المتوقع من Cart API
+json
+{
+    "success": true,
+    "data": {
+        "cart": {
+            "id": 1,
+            "items": [
+                {
+                    "id": 1,
+                    "product_id": 1,
+                    "product_name": "iPhone 15 Pro",
+                    "quantity": 2,
+                    "price_at_time": "4999.00",
+                    "total": "9998.00",
+                    "variant": null
+                }
+            ],
+            "subtotal": "9998.00",
+            "discount": "0.00",
+            "total": "9998.00",
+            "coupon_code": null,
+            "items_count": 2
+        }
+    },
+    "message": "Cart retrieved successfully"
+}
+✅ ما يتوقع من AI عمله الآن
+#	المطلوب
+1	تصميم CartServiceInterface و CartRepositoryInterface
+2	تنفيذ CartService و CartRepository بنفس نمط Products
+3	إنشاء CartController
+4	إنشاء CartRequest للتحقق من صحة البيانات
+5	إنشاء CartResource و CartCollection للتنسيق
+6	إضافة Routes في routes/api.php
+7	التسجيل في Service Provider
+8	إنشاء Seeder للبيانات التجريبية (اختياري)
+📊 تذكير بنمط الكود المستخدم
+text
+CartController
+       ↓
+CartServiceInterface
+       ↓
+CartService
+       ↓
+CartRepositoryInterface
+       ↓
+CartRepository
+       ↓
+Cart Model (و CartItem Model)
