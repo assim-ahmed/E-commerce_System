@@ -1,0 +1,25 @@
+✅ Products APIs - Added to Documentation
+Products (9 endpoints)
+Method	Endpoint			Access		Description
+GET	/api/products			Public		Get products list with filters (search, category, brand, price range, sorting, pagination)
+GET	/api/products/featured		Public		Get featured products
+GET	/api/products/slug/{slug}	Public		Get product by slug
+GET	/api/products/{id}		Public		Get product by ID
+POST	/api/products			Admin only	Create new product
+PUT	/api/products/{id}		Admin only	Update existing product
+DELETE	/api/products/{id}		Admin only	Delete product
+POST	/api/products/{id}/stock	Admin only	Update product stock with logging
+GET	/api/products/low-stock		Admin only	Get low stock products
+
+Query Parameters for GET /api/products
+Parameter	Type	Default	Description
+search	string	null	Search in name, short_description, description
+category_id	integer	null	Filter by category ID
+brand_id	integer	null	Filter by brand ID
+min_price	decimal	null	Minimum price
+max_price	decimal	null	Maximum price
+is_featured	boolean	null	Filter featured products only
+sort_by	string	created_at	Sort by: name, base_price, created_at, views_count
+sort_order	string	desc	Sort order: asc, desc
+per_page	integer	15	Items per page (max: 100)
+page	integer	1	Page number
