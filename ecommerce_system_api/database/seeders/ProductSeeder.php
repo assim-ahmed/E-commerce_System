@@ -77,7 +77,7 @@ class ProductSeeder extends Seeder
                     'is_low_stock' => $product['stock'] <= 10,
                     'sku' => strtoupper(Str::random(8)),
                     'is_featured' => $product['featured'],
-                    'is_active' => true,
+
                     'views_count' => rand(0, 500),
                     'images' => json_encode(["products/{$product['name']}_1.jpg", "products/{$product['name']}_2.jpg"]),
                     'specifications' => json_encode([
@@ -130,7 +130,7 @@ class ProductSeeder extends Seeder
                     'is_low_stock' => $product['stock'] <= 15,
                     'sku' => strtoupper(Str::random(8)),
                     'is_featured' => rand(0, 1) === 1,
-                    'is_active' => true,
+
                     'views_count' => rand(0, 500),
                     'images' => json_encode(["clothing/{$product['name']}_1.jpg", "clothing/{$product['name']}_2.jpg"]),
                     'specifications' => json_encode([
@@ -174,7 +174,7 @@ class ProductSeeder extends Seeder
                     'is_low_stock' => $product['stock'] <= 20,
                     'sku' => strtoupper(Str::random(8)),
                     'is_featured' => rand(0, 1) === 1,
-                    'is_active' => true,
+
                     'views_count' => rand(0, 300),
                     'images' => json_encode(["books/{$product['name']}.jpg"]),
                     'specifications' => json_encode([
@@ -217,7 +217,7 @@ class ProductSeeder extends Seeder
                     'is_low_stock' => $product['stock'] <= 30,
                     'sku' => strtoupper(Str::random(8)),
                     'is_featured' => rand(0, 1) === 1,
-                    'is_active' => true,
+
                     'views_count' => rand(0, 300),
                     'images' => json_encode(["home/{$product['name']}.jpg"]),
                     'specifications' => json_encode([
@@ -259,7 +259,7 @@ class ProductSeeder extends Seeder
                     'is_low_stock' => $product['stock'] <= 25,
                     'sku' => strtoupper(Str::random(8)),
                     'is_featured' => rand(0, 1) === 1,
-                    'is_active' => true,
+
                     'views_count' => rand(0, 300),
                     'images' => json_encode(["sports/{$product['name']}.jpg"]),
                     'specifications' => json_encode([
