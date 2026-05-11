@@ -1,142 +1,132 @@
-📋 ملخص ما تم إنجازه حتى الآن
-✅ 1. Products API Module (كاملة)
-العنصر	التفاصيل
-عدد الـ Endpoints	9 Endpoints (4 Public + 5 Admin)
-النمط المعماري	Service - Repository Pattern
-الـ Interfaces	ProductRepositoryInterface, ProductServiceInterface
-الـ Controllers	ProductController
-الـ Requests	ProductRequest (يدعم Create/Update)
-الـ Resources	ProductResource, ProductCollection
-الـ Middleware	AdminMiddleware
-الـ Seeders	ProductSeeder (70+ منتج تجريبي)
-✅ 2. الميزات المنفذة في Products API
-الميزة	الحالة
-قائمة المنتجات مع Pagination	✅
-بحث نصي (search)	✅
-فلترة بتصنيف (category_id)	✅
-فلترة بماركة (brand_id)	✅
-فلترة بالسعر (min_price, max_price)	✅
-فلترة المنتجات المميزة (is_featured)	✅
-ترتيب (sort_by, sort_order)	✅
-عرض منتج بالـ ID	✅
-عرض منتج بالـ Slug	✅
-إضافة منتج (Admin)	✅
-تحديث منتج (Admin)	✅
-حذف منتج (Admin)	✅
-تحديث المخزون مع تسجيل حركة	✅
-عرض المنتجات قليلة المخزون (Admin)	✅
-دعم متغيرات المنتج (variants)	✅
-دعم الصور والمواصفات (JSON)	✅
-منتجات ذات صلة (related products)	✅
-✅ 3. الملفات التي تم إنشاؤها
-text
-app/Contracts/Repositories/ProductRepositoryInterface.php
-app/Contracts/Services/ProductServiceInterface.php
-app/Repositories/ProductRepository.php
-app/Services/ProductService.php
-app/Http/Controllers/Api/ProductController.php
-app/Http/Requests/Product/ProductRequest.php
-app/Http/Resources/Product/ProductResource.php
-app/Http/Resources/Product/ProductCollection.php
-app/Http/Middleware/AdminMiddleware.php
-database/seeders/ProductSeeder.php
-products-api-documentation.txt (ملف شرح)
-✅ 4. الملفات التي تم تعديلها
-text
-routes/api.php
-app/Providers/AppServiceProvider.php
-bootstrap/app.php
-ملف شرح API الرئيسي
-✅ 5. إجمالي الـ APIs بعد الإضافة
-Module	عدد الـ Endpoints
-Authentication	7
-Categories	6
-Brands	6
-Products	9
-المجموع الكلي	28
-🚀 الخطوة التالية (ما المطلوب من AI)
-🎯 المطلوب: بناء Shopping Cart API (سلة المشتريات)
-📋 تفاصيل Cart API المطلوبة
-#	الميزة	الوصف
-1	إضافة إلى السلة	Guest (cookie) أو Registered User (user_id)
-2	عرض السلة	عرض محتويات السلة مع حساب الإجمالي
-3	تحديث الكمية	تغيير كمية منتج في السلة
-4	حذف من السلة	إزالة منتج من السلة
-5	تفريغ السلة	حذف كل المنتجات من السلة
-6	تطبيق كوبون	إضافة كوبون خصم على السلة
-📊 الجداول المرتبطة بـ Cart
-الجدول	الدور
-carts	تخزين بيانات السلة (user_id, cookie_id)
-cart_items	تخزين منتجات السلة (product_id, variant_id, quantity, price_at_time)
-coupons	كوبونات الخصم
-products	بيانات المنتجات
-product_variants	متغيرات المنتج
-🎯 الـ Endpoints المطلوبة لـ Cart API
-Method	Endpoint	الوصف	الصلاحية
-GET	/api/cart	عرض السلة	Guest/User
-POST	/api/cart/items	إضافة منتج إلى السلة	Guest/User
-PUT	/api/cart/items/{id}	تحديث كمية منتج في السلة	Guest/User
-DELETE	/api/cart/items/{id}	حذف منتج من السلة	Guest/User
-DELETE	/api/cart/clear	تفريغ السلة بالكامل	Guest/User
-POST	/api/cart/apply-coupon	تطبيق كوبون خصم	Guest/User
-DELETE	/api/cart/remove-coupon	إزالة الكوبون	Guest/User
-📝 نقاط مهمة يجب مراعاتها في Cart API
-النقطة	التفاصيل
-نظام المصادقة	استخدام Laravel Sanctum
-الزوار (Guest)	استخدام cookie_id المخزن في الـ cookie
-المستخدمين المسجلين	استخدام user_id
-سعر المنتج	تخزين price_at_time عند الإضافة (لحماية السعر من التغيير لاحقاً)
-المخزون	التأكد من توفر المخزون قبل الإضافة
-المتغيرات	دعم إضافة منتج بمتغير محدد (لون، مقاس)
-نفس المنتج	إذا أضاف نفس المنتج مرتين، يتم زيادة الكمية
-الكوبونات	التحقق من صلاحية الكوبون (تاريخ، أقل مبلغ، غير مستخدم)
-🎯 الـ Response المتوقع من Cart API
-json
+أنت تعمل معي على مشروع E-commerce API باستخدام Laravel + PHP + MySQL + React (Frontend منفصل).
+
+---
+
+## ✅ آخر ما تم إنجازه (Completed):
+
+### 🛒 Cart API (مكتمل بالكامل)
+تم بناء نظام سلة المشتريات كاملاً باستخدام **Service-Repository Pattern** مع الميزات التالية:
+
+**الـ Endpoints المنفذة (5 Endpoints):**
+| Method | Endpoint | الوصف |
+|--------|----------|-------|
+| GET | /api/cart | عرض السلة مع حساب الإجماليات |
+| POST | /api/cart/items | إضافة منتج إلى السلة |
+| PUT | /api/cart/items/{id} | تحديث كمية منتج |
+| DELETE | /api/cart/items/{id} | حذف منتج من السلة |
+| DELETE | /api/cart/clear | تفريغ السلة بالكامل |
+
+**الميزات المنفذة:**
+- ✅ دعم الزوار (Guest) عبر Cookie يتم إنشاؤه تلقائياً
+- ✅ دعم المستخدمين المسجلين (User) عبر Laravel Sanctum
+- ✅ دعم متغيرات المنتج (product_variants: لون، مقاس، سعة)
+- ✅ التحقق من المخزون قبل الإضافة أو التحديث
+- ✅ منع إضافة نفس المنتج مرتين (يُرجع 422 مع رسالة واضحة)
+- ✅ تخزين سعر المنتج عند الإضافة (price_at_time) لحماية الطلب من تغير الأسعار
+- ✅ عرض السعر الحالي مع إشعار في حال تغير السعر (price_changed)
+- ✅ دمج سلة الزائر مع سلة المستخدم عند تسجيل الدخول
+- ✅ استخدام try-catch في Controller للتعامل مع الـ ValidationException (يرجع 422 بدلاً من 500)
+- ✅ استخدام Middleware لإنشاء Cookie الزائر تلقائياً
+
+**الملفات التي تم إنشاؤها:**
+app/Contracts/Repositories/CartRepositoryInterface.php
+app/Contracts/Services/CartServiceInterface.php
+app/Repositories/CartRepository.php
+app/Services/CartService.php
+app/Http/Controllers/Api/CartController.php
+app/Http/Requests/Cart/AddToCartRequest.php
+app/Http/Requests/Cart/UpdateCartItemRequest.php
+app/Http/Resources/Cart/CartResource.php
+app/Http/Resources/Cart/CartItemResource.php
+app/Http/Middleware/CartCookieMiddleware.php
+
+
+
+**الملفات التي تم تعديلها:**
+routes/api.php (أضيفت Routes الـ Cart)
+app/Providers/AppServiceProvider.php (تسجيل الـ Interfaces)
+database/seeders/ProductSeeder.php (إزالة عمود is_active)
+
+
+## 📊 إجمالي APIs المكتملة حتى الآن (33 Endpoint):
+
+| Module | عدد الـ Endpoints |
+|--------|------------------|
+| Authentication | 7 |
+| Categories | 6 |
+| Brands | 6 |
+| Products | 9 |
+| **Cart** | **5** |
+| **Total** | **33** |
+
+---
+
+## 🚀 الخطوة التالية (Next Step):
+
+المطلوب الآن بناء **Orders API** (نظام الطلبات).
+
+### المطلوب في Orders API:
+
+**الـ Endpoints المخطط لها:**
+| Method | Endpoint | الوصف |
+|--------|----------|-------|
+| GET | /api/orders | عرض كل طلبات المستخدم (مع pagination) |
+| GET | /api/orders/{id} | عرض طلب معين بالتفصيل |
+| POST | /api/orders | إنشاء طلب جديد من السلة |
+| PUT | /api/orders/{id}/status | تحديث حالة الطلب (Admin only) |
+| DELETE | /api/orders/{id} | إلغاء طلب (في حالات محددة) |
+| GET | /api/orders/admin/all | عرض كل الطلبات (Admin only) |
+
+**القواعد المطلوب مراعاتها:**
+1. عند إنشاء طلب:
+   - يتم نقل المنتجات من `cart_items` إلى `order_items`
+   - يتم تخزين نسخة (snapshot) من بيانات المنتج (السعر، الاسم) لحماية الطلب من التغيير لاحقاً
+   - يتم خصم الكمية من المخزون (stock_quantity)
+   - يتم تسجيل الحركة في `inventory_logs`
+   - يتم تفريغ السلة بعد إنشاء الطلب
+
+2. حالات الطلب (order status):
+   - pending (قيد الانتظار)
+   - processing (قيد المعالجة)
+   - completed (مكتمل)
+   - cancelled (ملغي)
+   - refunded (مسترجع)
+
+3. لا يمكن تعديل طلب بعد إنشائه (للحفاظ على integrity)
+4. لا يمكن إلغاء طلب إذا كان completed أو cancelled
+
+**الجداول المعنية:**
+- `orders` (الطلبات)
+- `order_items` (منتجات الطلب مع الـ snapshot)
+- `carts` و `cart_items` (لتفريغها بعد إنشاء الطلب)
+- `inventory_logs` (لتسجيل حركة المخزون)
+- `products` (لتحديث المخزون)
+
+---
+
+## 📌 أسلوب التطبيق المطلوب:
+
+- نفس **Service-Repository Pattern** المستخدم في Products و Cart
+- استخدام **Laravel Sanctum** للمصادقة
+- الـ Admin فقط يمكنه تحديث حالة الطلب
+- الـ API Responses تكون بصيغة JSON موحدة:
+```json
 {
     "success": true,
-    "data": {
-        "cart": {
-            "id": 1,
-            "items": [
-                {
-                    "id": 1,
-                    "product_id": 1,
-                    "product_name": "iPhone 15 Pro",
-                    "quantity": 2,
-                    "price_at_time": "4999.00",
-                    "total": "9998.00",
-                    "variant": null
-                }
-            ],
-            "subtotal": "9998.00",
-            "discount": "0.00",
-            "total": "9998.00",
-            "coupon_code": null,
-            "items_count": 2
-        }
-    },
-    "message": "Cart retrieved successfully"
+    "data": {},
+    "message": "",
+    "errors": {}
 }
-✅ ما يتوقع من AI عمله الآن
-#	المطلوب
-1	تصميم CartServiceInterface و CartRepositoryInterface
-2	تنفيذ CartService و CartRepository بنفس نمط Products
-3	إنشاء CartController
-4	إنشاء CartRequest للتحقق من صحة البيانات
-5	إنشاء CartResource و CartCollection للتنسيق
-6	إضافة Routes في routes/api.php
-7	التسجيل في Service Provider
-8	إنشاء Seeder للبيانات التجريبية (اختياري)
-📊 تذكير بنمط الكود المستخدم
-text
-CartController
-       ↓
-CartServiceInterface
-       ↓
-CartService
-       ↓
-CartRepositoryInterface
-       ↓
-CartRepository
-       ↓
-Cart Model (و CartItem Model)
+⚠️ ملاحظات مهمة:
+لا تستخدم SoftDeletes (لأن قاعدة البيانات لا تحتوي على deleted_at)
+
+لا تغير هيكل قاعدة البيانات بدون الرجوع إليّ
+
+اتبع العلاقات المحددة في الـ Schema الأصلي للمشروع
+
+دعم الأداء لـ 100,000+ منتج (استخدام Eager Loading، Indexes)
+
+استخدام try-catch في الـ Controller للتعامل مع الـ Exceptions
+
+🎯 المطلوب منك الآن:
+بناء Orders API كاملاً بنفس جودة وطريقة Cart API، مع الالتزام بكل القواعد المذكورة أعلاه.
