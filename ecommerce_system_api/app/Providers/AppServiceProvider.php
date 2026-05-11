@@ -8,7 +8,7 @@ use App\Repositories\UserRepository;
 use App\Contracts\Services\AuthServiceInterface;
 use App\Services\AuthService;
 
-// Add these new imports
+
 use App\Contracts\Repositories\CategoryRepositoryInterface;
 use App\Repositories\CategoryRepository;
 use App\Contracts\Services\CategoryServiceInterface;
@@ -23,6 +23,12 @@ use App\Contracts\Repositories\ProductRepositoryInterface;
 use App\Contracts\Services\ProductServiceInterface;
 use App\Repositories\ProductRepository;
 use App\Services\ProductService;
+
+
+use App\Contracts\Repositories\CartRepositoryInterface;
+use App\Contracts\Services\CartServiceInterface;
+use App\Repositories\CartRepository;
+use App\Services\CartService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -50,6 +56,10 @@ class AppServiceProvider extends ServiceProvider
             ProductServiceInterface::class,
             ProductService::class
         );
+
+
+        $this->app->bind(CartRepositoryInterface::class, CartRepository::class);
+        $this->app->bind(CartServiceInterface::class, CartService::class);
     }
 
     public function boot(): void

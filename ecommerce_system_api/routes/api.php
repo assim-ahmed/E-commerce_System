@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\CartController;
+
 
 use Illuminate\Support\Facades\Route;
 
@@ -72,4 +74,20 @@ Route::prefix('products')->group(function () {
         Route::put('/{id}', [ProductController::class, 'update']);
         Route::delete('/{id}', [ProductController::class, 'destroy']);
     });
+});
+
+
+Route::prefix('cart')->group(function () {
+    Route::get('/', [CartController::class, 'index']);
+    Route::post('/items', [CartController::class, 'addItem']);
+    Route::put('/items/{cartItemId}', [CartController::class, 'updateItem']);
+    Route::delete('/items/{cartItemId}', [CartController::class, 'removeItem']);
+    Route::delete('/clear', [CartController::class, 'clear']);
+});
+
+
+Route::get('/test-cookie', function() {
+    return response()
+        ->json(['message' => 'Cookie test'])
+        ->cookie('test_cookie', 'hello123', 60);
 });
