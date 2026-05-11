@@ -27,7 +27,6 @@ return new class extends Migration
             $table->string('sku')->unique();
             $table->json('images')->nullable();
             $table->json('specifications')->nullable();  // المواصفات الفنية
-            $table->boolean('is_active')->default(true);
             $table->boolean('is_featured')->default(false);
             $table->integer('views_count')->default(0);
             $table->timestamps();
@@ -36,7 +35,7 @@ return new class extends Migration
             $table->index('slug');
             $table->index('category_id');
             $table->index('brand_id');
-            $table->index(['is_active', 'is_featured']);
+            $table->index('is_featured');
             $table->index('sku');
             $table->index('created_at');
             $table->index('base_price');

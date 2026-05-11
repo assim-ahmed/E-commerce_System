@@ -8,6 +8,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\UpdateProfileRequest;
 use App\Contracts\Services\AuthServiceInterface;
+use App\Contracts\Services\CartServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -34,7 +35,7 @@ class AuthController extends Controller
         ], 201);
     }
 
-    public function login(LoginRequest $request): JsonResponse
+    public function login(LoginRequest $request, CartServiceInterface $cartService): JsonResponse
     {
         $result = $this->authService->login(
             $request->email,
@@ -62,6 +63,11 @@ class AuthController extends Controller
                 'message' => $messages[$result['error']],
                 'errors' => null
             ], 403);
+        }
+
+        $cookieId = $request->cookie('cart_cookie');
+        if ($cookieId) {
+            $cartService->mergeGuestCartWithUserCart($cookieId, auth('sanctum')->id());
         }
 
         return response()->json([
