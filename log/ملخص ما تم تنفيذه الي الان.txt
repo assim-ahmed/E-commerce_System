@@ -1,116 +1,250 @@
+📋 Project Context Document for AI Assistant
 أنت تعمل معي على مشروع E-commerce API باستخدام Laravel + PHP + MySQL + React (Frontend منفصل).
 
----
+✅ آخر ما تم إنجازه (Completed):
+🏠 Addresses API (مكتمل بالكامل)
+تم بناء نظام إدارة عناوين المستخدمين باستخدام Service-Repository Pattern.
 
-## ✅ آخر ما تم إنجازه (Completed):
+الـ Endpoints المنفذة (4 Endpoints):
 
-### 🛒 Cart API (مكتمل بالكامل)
-تم بناء نظام سلة المشتريات كاملاً باستخدام **Service-Repository Pattern** مع الميزات التالية:
+Method	Endpoint	الوصف
+GET	/api/addresses	عرض كل عناوين المستخدم
+POST	/api/addresses	إضافة عنوان جديد
+PUT	/api/addresses/{id}	تعديل عنوان موجود
+DELETE	/api/addresses/{id}	حذف عنوان
+الميزات المنفذة:
 
-**الـ Endpoints المنفذة (5 Endpoints):**
-| Method | Endpoint | الوصف |
-|--------|----------|-------|
-| GET | /api/cart | عرض السلة مع حساب الإجماليات |
-| POST | /api/cart/items | إضافة منتج إلى السلة |
-| PUT | /api/cart/items/{id} | تحديث كمية منتج |
-| DELETE | /api/cart/items/{id} | حذف منتج من السلة |
-| DELETE | /api/cart/clear | تفريغ السلة بالكامل |
+✅ أول عنوان يتم إضافته يصبح default تلقائياً
 
-**الميزات المنفذة:**
-- ✅ دعم الزوار (Guest) عبر Cookie يتم إنشاؤه تلقائياً
-- ✅ دعم المستخدمين المسجلين (User) عبر Laravel Sanctum
-- ✅ دعم متغيرات المنتج (product_variants: لون، مقاس، سعة)
-- ✅ التحقق من المخزون قبل الإضافة أو التحديث
-- ✅ منع إضافة نفس المنتج مرتين (يُرجع 422 مع رسالة واضحة)
-- ✅ تخزين سعر المنتج عند الإضافة (price_at_time) لحماية الطلب من تغير الأسعار
-- ✅ عرض السعر الحالي مع إشعار في حال تغير السعر (price_changed)
-- ✅ دمج سلة الزائر مع سلة المستخدم عند تسجيل الدخول
-- ✅ استخدام try-catch في Controller للتعامل مع الـ ValidationException (يرجع 422 بدلاً من 500)
-- ✅ استخدام Middleware لإنشاء Cookie الزائر تلقائياً
+✅ يمكن للمستخدم تحديد عنوان default يدوياً
 
-**الملفات التي تم إنشاؤها:**
-app/Contracts/Repositories/CartRepositoryInterface.php
-app/Contracts/Services/CartServiceInterface.php
-app/Repositories/CartRepository.php
-app/Services/CartService.php
-app/Http/Controllers/Api/CartController.php
-app/Http/Requests/Cart/AddToCartRequest.php
-app/Http/Requests/Cart/UpdateCartItemRequest.php
-app/Http/Resources/Cart/CartResource.php
-app/Http/Resources/Cart/CartItemResource.php
-app/Http/Middleware/CartCookieMiddleware.php
+✅ عند حذف عنوان default، يتم تعيين عنوان آخر كـ default
 
+✅ Phone number مدعوم
 
+✅ Validation كامل للحقول (address_line_1, city, country مطلوبة)
 
-**الملفات التي تم تعديلها:**
-routes/api.php (أضيفت Routes الـ Cart)
+✅ المستخدم يرى فقط عناوينه (لا يرى عناوين المستخدمين الآخرين)
+
+الملفات التي تم إنشاؤها:
+
+text
+app/Http/Controllers/Api/AddressController.php
+الملفات التي تم تعديلها:
+
+text
+routes/api.php (أضيفت Routes الـ Addresses)
+📦 Orders API (مكتمل بالكامل)
+تم بناء نظام الطلبات بالكامل باستخدام Service-Repository Pattern.
+
+الـ Endpoints المنفذة (6 Endpoints):
+
+Method	Endpoint	الوصف
+GET	/api/orders	عرض كل طلبات المستخدم (مع pagination)
+GET	/api/orders/{id}	عرض طلب معين بالتفصيل
+POST	/api/orders	إنشاء طلب جديد من السلة
+DELETE	/api/orders/{id}/cancel	إلغاء طلب (pending/processing فقط)
+PUT	/api/orders/{id}/status	تحديث حالة الطلب (Admin only)
+GET	/api/admin/orders	عرض كل الطلبات (Admin only)
+الميزات المنفذة:
+
+✅ إنشاء طلب من السلة مع التحقق من المخزون
+
+✅ التحقق من صحة العنوان (address_id يخص المستخدم)
+
+✅ تخزين نسخة (snapshot) من سعر واسم المنتج في order_items
+
+✅ خصم المخزون تلقائياً عند إنشاء الطلب
+
+✅ تسجيل حركة المخزون في inventory_logs
+
+✅ تفريغ السلة بعد إنشاء الطلب بنجاح
+
+✅ رقم طلب فريد (ORD-xxxxx)
+
+✅ حالات الطلب (pending, processing, completed, cancelled, refunded)
+
+✅ التحقق من صحة transition بين الحالات
+
+✅ منع إلغاء الطلبات المكتملة أو الملغية
+
+✅ Admin فقط يمكنه تحديث حالة الطلب
+
+✅ استخدام try-catch للتعامل مع الاستثناءات
+
+✅ JSON موحد للـ Responses
+
+الملفات التي تم إنشاؤها:
+
+text
+app/Contracts/Repositories/OrderRepositoryInterface.php
+app/Contracts/Repositories/InventoryLogRepositoryInterface.php
+app/Repositories/OrderRepository.php
+app/Repositories/InventoryLogRepository.php
+app/Contracts/Services/OrderServiceInterface.php
+app/Services/OrderService.php
+app/Http/Controllers/Api/OrderController.php
+app/Http/Requests/Order/CreateOrderRequest.php
+app/Http/Requests/Order/UpdateOrderStatusRequest.php
+app/Http/Resources/Order/OrderResource.php
+app/Http/Resources/Order/OrderItemResource.php
+app/Http/Middleware/AdminMiddleware.php
+الملفات التي تم تعديلها:
+
+text
+app/Models/Order.php (أضيفت Constants: STATUS_PENDING, STATUS_PROCESSING, STATUS_COMPLETED, STATUS_CANCELLED, STATUS_REFUNDED)
 app/Providers/AppServiceProvider.php (تسجيل الـ Interfaces)
-database/seeders/ProductSeeder.php (إزالة عمود is_active)
+routes/api.php (أضيفت Routes الـ Orders)
+📊 إجمالي APIs المكتملة حتى الآن (43 Endpoint):
+Module	عدد الـ Endpoints
+Authentication	7
+Categories	6
+Brands	6
+Products	9
+Cart	5
+Addresses	4
+Orders	6
+Total	43
+🚀 الخطوة التالية (Next Step):
+المطلوب الآن بناء Reviews API (نظام التقييمات).
 
+المطلوب في Reviews API:
+الـ Endpoints المخطط لها (5 Endpoints):
 
-## 📊 إجمالي APIs المكتملة حتى الآن (33 Endpoint):
+Method	Endpoint	الوصف
+GET	/api/products/{id}/reviews	عرض تقييمات منتج معين (Public)
+POST	/api/products/{id}/reviews	إضافة تقييم على منتج (بعد الشراء فقط)
+PUT	/api/reviews/{id}	تعديل تقييم (مالك التقييم فقط)
+DELETE	/api/reviews/{id}	حذف تقييم (مالك التقييم فقط)
+PUT	/api/admin/reviews/{id}/approve	الموافقة على تقييم (Admin only)
+📋 القواعد المطلوب مراعاتها:
+شروط إضافة التقييم:
 
-| Module | عدد الـ Endpoints |
-|--------|------------------|
-| Authentication | 7 |
-| Categories | 6 |
-| Brands | 6 |
-| Products | 9 |
-| **Cart** | **5** |
-| **Total** | **33** |
+المستخدم يجب أن يكون مسجل دخول (Authenticated via Sanctum)
 
----
+المستخدم يجب أن يكون قد اشترى المنتج فعلاً (يوجد order كامل بهذا المنتج)
 
-## 🚀 الخطوة التالية (Next Step):
+المستخدم لا يمكنه تقييم نفس المنتج أكثر من مرة
 
-المطلوب الآن بناء **Orders API** (نظام الطلبات).
+ربط التقييم بـ order_id (للتأكد من الشراء)
 
-### المطلوب في Orders API:
+بيانات التقييم:
 
-**الـ Endpoints المخطط لها:**
-| Method | Endpoint | الوصف |
-|--------|----------|-------|
-| GET | /api/orders | عرض كل طلبات المستخدم (مع pagination) |
-| GET | /api/orders/{id} | عرض طلب معين بالتفصيل |
-| POST | /api/orders | إنشاء طلب جديد من السلة |
-| PUT | /api/orders/{id}/status | تحديث حالة الطلب (Admin only) |
-| DELETE | /api/orders/{id} | إلغاء طلب (في حالات محددة) |
-| GET | /api/orders/admin/all | عرض كل الطلبات (Admin only) |
+rating من 1 إلى 5 نجوم (required, integer, min:1, max:5)
 
-**القواعد المطلوب مراعاتها:**
-1. عند إنشاء طلب:
-   - يتم نقل المنتجات من `cart_items` إلى `order_items`
-   - يتم تخزين نسخة (snapshot) من بيانات المنتج (السعر، الاسم) لحماية الطلب من التغيير لاحقاً
-   - يتم خصم الكمية من المخزون (stock_quantity)
-   - يتم تسجيل الحركة في `inventory_logs`
-   - يتم تفريغ السلة بعد إنشاء الطلب
+comment نص (nullable, string, max:1000)
 
-2. حالات الطلب (order status):
-   - pending (قيد الانتظار)
-   - processing (قيد المعالجة)
-   - completed (مكتمل)
-   - cancelled (ملغي)
-   - refunded (مسترجع)
+images صور (nullable, array, max:5, each image: jpg,jpeg,png,max:2MB)
 
-3. لا يمكن تعديل طلب بعد إنشائه (للحفاظ على integrity)
-4. لا يمكن إلغاء طلب إذا كان completed أو cancelled
+is_approved افتراضياً false، فقط Admin يوافق عليه
 
-**الجداول المعنية:**
-- `orders` (الطلبات)
-- `order_items` (منتجات الطلب مع الـ snapshot)
-- `carts` و `cart_items` (لتفريغها بعد إنشاء الطلب)
-- `inventory_logs` (لتسجيل حركة المخزون)
-- `products` (لتحديث المخزون)
+عرض التقييمات:
 
----
+المستخدم العادي يرى فقط التقييمات المعتمدة (is_approved = true)
 
-## 📌 أسلوب التطبيق المطلوب:
+Admin يرى كل التقييمات (حتى غير المعتمدة)
 
-- نفس **Service-Repository Pattern** المستخدم في Products و Cart
-- استخدام **Laravel Sanctum** للمصادقة
-- الـ Admin فقط يمكنه تحديث حالة الطلب
-- الـ API Responses تكون بصيغة JSON موحدة:
-```json
+صاحب التقييم يرى تقييمه حتى لو غير معتمد
+
+التعديل والحذف:
+
+يمكن للمستخدم تعديل أو حذف تقييمه فقط
+
+لا يمكن التعديل بعد موافقة Admin (يُرجع 403)
+
+عند حذف المنتج، يتم حذف تقييماته (Cascade)
+
+الإحصائيات:
+
+كل منتج يحتوي على average_rating (يتم حسابه عند إضافة/تعديل/حذف/موافقة تقييم)
+
+reviews_count عدد التقييمات المعتمدة فقط
+
+🗃️ الجداول المعنية:
+reviews (جدول التقييمات الرئيسي)
+
+user_id, product_id, order_id, rating, comment, images, is_approved
+
+products (لتحديث average_rating و reviews_count)
+
+orders (للتحقق من شراء المستخدم للمنتج - status = completed)
+
+order_items (للتأكد أن المنتج موجود في طلب مكتمل)
+
+🛡️ قواعد الأمان والصلاحيات:
+الإجراء	Customer	Admin
+عرض التقييمات المعتمدة	✅	✅
+عرض كل التقييمات (حتى غير المعتمدة)	❌ (إلا تقييمه هو)	✅
+إضافة تقييم (بعد الشراء)	✅	✅
+تعديل تقييمه	✅ (قبل الموافقة فقط)	❌
+حذف تقييمه	✅	✅ (أي تقييم)
+الموافقة على تقييم	❌	✅
+📌 العلاقات المطلوبة في Models:
+php
+// Product Model
+public function reviews(): HasMany
+public function approvedReviews(): HasMany
+public function averageRating(): float
+public function reviewsCount(): int
+
+// User Model
+public function reviews(): HasMany
+
+// Review Model
+public function user(): BelongsTo
+public function product(): BelongsTo
+public function order(): BelongsTo
+📁 هيكل الملفات المطلوب إنشاؤها:
+text
+app/Contracts/Repositories/
+└── ReviewRepositoryInterface.php
+
+app/Repositories/
+└── ReviewRepository.php
+
+app/Contracts/Services/
+└── ReviewServiceInterface.php
+
+app/Services/
+└── ReviewService.php
+
+app/Http/Controllers/Api/
+└── ReviewController.php
+
+app/Http/Requests/Review/
+├── CreateReviewRequest.php
+└── UpdateReviewRequest.php
+
+app/Http/Resources/Review/
+└── ReviewResource.php
+🔄 سير العمل (Workflow):
+text
+1. مستخدم يشتري منتج (Order status = completed)
+                ↓
+2. المستخدم يذهب إلى المنتج ويضيف تقييم
+   POST /api/products/{id}/reviews
+                ↓
+3. النظام يتحقق:
+   - هل المستخدم اشترى هذا المنتج؟
+   - هل سبق له التقييم؟
+                ↓
+4. التقييم يُخزن في DB مع is_approved = false
+                ↓
+5. Admin يرى التقييم في لوحة التحكم
+   PUT /api/admin/reviews/{id}/approve
+                ↓
+6. بعد الموافقة، التقييم يظهر للجميع
+   ويتم تحديث average_rating للمنتج
+📌 أسلوب التطبيق المطلوب:
+نفس Service-Repository Pattern المستخدم في Products و Cart و Orders
+
+استخدام Laravel Sanctum للمصادقة
+
+الـ Admin فقط يمكنه الموافقة على التقييمات
+
+الـ API Responses تكون بصيغة JSON موحدة:
+
+json
 {
     "success": true,
     "data": {},
@@ -128,5 +262,28 @@ database/seeders/ProductSeeder.php (إزالة عمود is_active)
 
 استخدام try-catch في الـ Controller للتعامل مع الـ Exceptions
 
+عند الموافقة على تقييم (is_approved = true)، يتم إعادة حساب average_rating للمنتج
+
 🎯 المطلوب منك الآن:
-بناء Orders API كاملاً بنفس جودة وطريقة Cart API، مع الالتزام بكل القواعد المذكورة أعلاه.
+بناء Reviews API كاملاً بنفس جودة وطريقة Cart API و Orders API، مع الالتزام بكل القواعد المذكورة أعلاه.
+
+
+📋 قائمة التحقق قبل البدء (Checklist):
+النقطة	الحالة
+قراءة وفهم جميع القواعد	⬜
+فهم هيكل قاعدة البيانات (جدول reviews)	⬜
+فهم العلاقات بين الـ Models	⬜
+تجهيز Service-Repository Pattern	⬜
+كتابة الـ Interfaces	⬜
+كتابة الـ Repositories	⬜
+كتابة الـ Services	⬜
+كتابة الـ Controller	⬜
+كتابة الـ Form Requests	⬜
+كتابة الـ Resources	⬜
+إضافة Routes	⬜
+تسجيل الـ Interfaces في AppServiceProvider	⬜
+اختبار الـ Endpoints	⬜
+هل أنت جاهز للبدء في بناء Reviews API؟ 🚀
+
+
+

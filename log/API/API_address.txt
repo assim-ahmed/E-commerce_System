@@ -1,0 +1,6 @@
+🏠 ADDRESSES APIs (4 Endpoints) 
+Method	Endpoint		الوصف			الحالة	
+GET	/api/addresses		جلب كل عناوين المستخدم		✅ منجز
+POST	/api/addresses		إضافة عنوان جديد		✅ منجز
+PUT	/api/addresses/{id}	تعديل عنوان موجود		✅ منجز
+DELETE	/api/addresses/{id}	حذف عنوان			✅ منجز

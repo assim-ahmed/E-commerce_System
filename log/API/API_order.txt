@@ -1,0 +1,8 @@
+📦 ORDERS APIs (6 Endpoints) 
+Method	Endpoint			الوصف				الحالة
+GET	/api/orders			جلب طلبات المستخدم (مع pagination)	✅ منجز
+GET	/api/orders/{id}		جلب طلب معين بالتفصيل			✅ منجز
+POST	/api/orders			إنشاء طلب جديد من السلة			✅ منجز
+DELETE	/api/orders/{id}/cancel		إلغاء طلب (pending/processing فقط)	✅ منجز
+PUT	/api/orders/{id}/status		تحديث حالة الطلب (Admin only)	✅ منجز
+GET	/api/admin/orders		جلب كل الطلبات (Admin only)		✅ منجز
