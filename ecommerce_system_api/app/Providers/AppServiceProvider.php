@@ -30,6 +30,17 @@ use App\Contracts\Services\CartServiceInterface;
 use App\Repositories\CartRepository;
 use App\Services\CartService;
 
+
+use App\Contracts\Repositories\InventoryLogRepositoryInterface;
+use App\Repositories\InventoryLogRepository;
+
+
+use App\Contracts\Repositories\OrderRepositoryInterface;
+use App\Repositories\OrderRepository;
+use App\Contracts\Services\OrderServiceInterface;
+use App\Services\OrderService;
+
+
 class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
@@ -60,7 +71,17 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(CartRepositoryInterface::class, CartRepository::class);
         $this->app->bind(CartServiceInterface::class, CartService::class);
+
+        $this->app->bind(InventoryLogRepositoryInterface::class, InventoryLogRepository::class);
+
+        // Register Order Repository
+        $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
+
+        // Register Order Service
+        $this->app->bind(OrderServiceInterface::class, OrderService::class);
     }
+
+
 
     public function boot(): void
     {

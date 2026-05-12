@@ -65,9 +65,16 @@ class AuthController extends Controller
             ], 403);
         }
 
+      
+
         $cookieId = $request->cookie('cart_cookie');
         if ($cookieId) {
-            $cartService->mergeGuestCartWithUserCart($cookieId, auth('sanctum')->id());
+            // ✅ خد user_id من $result
+            $userId = $result['user']['id'] ?? null; // حسب شكل الـ $result
+
+            if ($userId) {
+                $cartService->mergeGuestCartWithUserCart($cookieId, $userId);
+            }
         }
 
         return response()->json([

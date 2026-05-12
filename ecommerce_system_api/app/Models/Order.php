@@ -14,8 +14,13 @@ use App\Models\Coupon;
 
 class Order extends Model
 {
-
-
+    // ========== Status Constants ==========
+    const STATUS_PENDING = 'pending';
+    const STATUS_PROCESSING = 'processing';
+    const STATUS_COMPLETED = 'completed';
+    const STATUS_CANCELLED = 'cancelled';
+    const STATUS_REFUNDED = 'refunded';
+    // ========== Fillable ==========
     protected $fillable = [
         'order_number',
         'user_id',
@@ -24,13 +29,14 @@ class Order extends Model
         'total',
         'coupon_code'
     ];
+    // ========== Casts ==========
 
     protected $casts = [
         'total' => 'decimal:2',
 
     ];
+    // ========== Relationships ==========
 
-    // Relationships
     public function user()
     {
         return $this->belongsTo(User::class);
