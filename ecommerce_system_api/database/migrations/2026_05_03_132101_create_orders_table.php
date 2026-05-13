@@ -19,9 +19,7 @@ return new class extends Migration
             $table->enum('status', [
                 'pending',
                 'processing',
-                'confirmed',
-                'shipped',
-                'delivered',
+                'completed',
                 'cancelled',
                 'refunded'
             ])->default('pending');

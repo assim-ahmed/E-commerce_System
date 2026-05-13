@@ -41,6 +41,12 @@ use App\Contracts\Services\OrderServiceInterface;
 use App\Services\OrderService;
 
 
+use App\Contracts\Repositories\ReviewRepositoryInterface;
+use App\Repositories\ReviewRepository;
+use App\Contracts\Services\ReviewServiceInterface;
+use App\Services\ReviewService;
+
+
 class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
@@ -79,6 +85,13 @@ class AppServiceProvider extends ServiceProvider
 
         // Register Order Service
         $this->app->bind(OrderServiceInterface::class, OrderService::class);
+
+
+        // Register Review Repository
+        $this->app->bind(ReviewRepositoryInterface::class, ReviewRepository::class);
+
+        // Register Review Service
+        $this->app->bind(ReviewServiceInterface::class, ReviewService::class);
     }
 
 
