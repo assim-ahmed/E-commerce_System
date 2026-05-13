@@ -47,6 +47,13 @@ use App\Contracts\Services\ReviewServiceInterface;
 use App\Services\ReviewService;
 
 
+
+use App\Contracts\Repositories\NotificationRepositoryInterface;
+use App\Repositories\NotificationRepository;
+use App\Contracts\Services\NotificationServiceInterface;
+use App\Services\NotificationService;
+
+
 class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
@@ -92,6 +99,12 @@ class AppServiceProvider extends ServiceProvider
 
         // Register Review Service
         $this->app->bind(ReviewServiceInterface::class, ReviewService::class);
+
+        // Register Notification Repository
+        $this->app->bind(NotificationRepositoryInterface::class, NotificationRepository::class);
+
+        // Register Notification Service
+        $this->app->bind(NotificationServiceInterface::class, NotificationService::class);
     }
 
 

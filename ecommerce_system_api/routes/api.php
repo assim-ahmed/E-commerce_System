@@ -9,6 +9,9 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\ReviewController;
 
+use App\Http\Controllers\Api\NotificationController;
+
+
 
 
 
@@ -129,4 +132,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Admin only review routes
     Route::get('/admin/reviews', [ReviewController::class, 'index'])->middleware('admin');
     Route::put('/admin/reviews/{id}/approve', [ReviewController::class, 'approve'])->middleware('admin');
+});
+
+
+// Notifications Routes
+Route::middleware(['auth:sanctum'])->prefix('notifications')->group(function () {
+    Route::get('/', [NotificationController::class, 'index']);
+    Route::get('/unread', [NotificationController::class, 'unread']);
+    Route::get('/unread/count', [NotificationController::class, 'unreadCount']);
+    Route::get('/{id}', [NotificationController::class, 'show']);
+    Route::put('/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::put('/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::delete('/{id}', [NotificationController::class, 'destroy']);
 });
