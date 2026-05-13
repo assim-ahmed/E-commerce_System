@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\AddressController;
+use App\Http\Controllers\Api\ReviewController;
 
 
 
@@ -113,4 +114,19 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/addresses', [AddressController::class, 'store']);
     Route::put('/addresses/{id}', [AddressController::class, 'update']);
     Route::delete('/addresses/{id}', [AddressController::class, 'destroy']);
+});
+
+
+// Reviews Routes
+Route::get('/products/{id}/reviews', [ReviewController::class, 'productReviews']);
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/products/{id}/reviews', [ReviewController::class, 'store']);
+    Route::get('/reviews/{id}', [ReviewController::class, 'show']);
+    Route::put('/reviews/{id}', [ReviewController::class, 'update']);
+    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
+
+    // Admin only review routes
+    Route::get('/admin/reviews', [ReviewController::class, 'index'])->middleware('admin');
+    Route::put('/admin/reviews/{id}/approve', [ReviewController::class, 'approve'])->middleware('admin');
 });
