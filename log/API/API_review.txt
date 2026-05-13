@@ -1,0 +1,9 @@
+📊 الـ Endpoints المنفذة (5 Endpoints):
+Method	Endpoint				الوصف			الحماية
+GET	/api/products/{id}/reviews		عرض تقييمات المنتج		Public
+POST	/api/products/{id}/reviews		إضافة تقييم			Auth
+GET	/api/reviews/{id}			عرض تقييم معين		Auth
+PUT	/api/reviews/{id}			تعديل تقييم			Auth (Owner)
+DELETE	/api/reviews/{id}			حذف تقييم			Auth (Owner/Admin)
+GET	/api/admin/reviews			كل التقييمات			Admin
+PUT	/api/admin/reviews/{id}/approve		موافقة على تقييم		Admin

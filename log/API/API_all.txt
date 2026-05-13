@@ -2,9 +2,9 @@
                     E-COMMERCE API - COMPLETE APIs SUMMARY
 ================================================================================
 
-📅 Last Updated: 2026-05-12
+📅 Last Updated: 2026-05-13
 👨‍💻 Status: In Progress
-🎯 Total APIs Completed: 43
+🎯 Total APIs Completed: 57
 
 ================================================================================
                         1. AUTHENTICATION APIs (7)
@@ -87,7 +87,7 @@
 - ✅ Proper exception handling (try-catch)
 
 ================================================================================
-                        6. ADDRESSES APIs (4) ✅ NEW
+                        6. ADDRESSES APIs (4)
 ================================================================================
 
 | Method | Endpoint                          | Access              | Description              |
@@ -100,22 +100,21 @@
 🏠 Address Features:
 - ✅ Auto-set default address for first address
 - ✅ Only one default address per user
-- ✅ Phone number support
 - ✅ Validation for required fields
 - ✅ New default auto-assigned if default is deleted
 
 ================================================================================
-                        7. ORDERS APIs (6) ✅ NEW
+                        7. ORDERS APIs (6)
 ================================================================================
 
-| Method | Endpoint                          | Access              | Description              		 |
-|--------|-----------------------------------|---------------------|-------------------------------------|
-| GET    | /api/orders                       | Auth (User)         | Get user orders         		 |
-| GET    | /api/orders/{id}                  | Auth (User)         | Get single order        		 |
-| POST   | /api/orders                       | Auth (User)         | Create order from cart		 |
-| DELETE | /api/orders/{id}/cancel           | Auth (User)         | Cancel order (pending/processing)   |
-| PUT    | /api/orders/{id}/status           | Admin only          | Update order status      		 |
-| GET    | /api/admin/orders                 | Admin only          | Get all orders          		 |
+| Method | Endpoint                          | Access              | Description                 |
+|--------|-----------------------------------|---------------------|-----------------------------|
+| GET    | /api/orders                       | Auth (User)         | Get user orders             |
+| GET    | /api/orders/{id}                  | Auth (User)         | Get single order            |
+| POST   | /api/orders                       | Auth (User)         | Create order from cart      |
+| DELETE | /api/orders/{id}/cancel           | Auth (User)         | Cancel order (pending/processing) |
+| PUT    | /api/orders/{id}/status           | Admin only          | Update order status         |
+| GET    | /api/admin/orders                 | Admin only          | Get all orders              |
 
 📦 Order Features:
 - ✅ Create order from cart with address validation
@@ -126,7 +125,7 @@
 - ✅ Order number auto-generated (ORD-xxxxx)
 - ✅ Status transitions validation
 - ✅ Prevent cancellation of completed orders
-- ✅ Admin can update status (pending → processing → completed)
+- ✅ Admin can update status
 - ✅ Eager loading for performance
 
 📊 Order Status Flow:
@@ -136,28 +135,55 @@
     (completed and cancelled are final states)
 
 ================================================================================
-                        8. NOTIFICATIONS APIs (Coming Soon)
+                        8. REVIEWS APIs (7) ✅ COMPLETED
 ================================================================================
 
-| Method | Endpoint                          | Access              | Description              |
-|--------|-----------------------------------|---------------------|--------------------------|
-| GET    | /api/notifications                | Auth (User)         | Get user notifications   |
-| GET    | /api/notifications/{id}           | Auth (User)         | Get single notification  |
-| PUT    | /api/notifications/{id}/read      | Auth (User)         | Mark as read             |
-| PUT    | /api/notifications/read-all       | Auth (User)         | Mark all as read         |
-| DELETE | /api/notifications/{id}           | Auth (User)         | Delete notification      |
+| Method | Endpoint                          | Access              | Description                    |
+|--------|-----------------------------------|---------------------|--------------------------------|
+| GET    | /api/products/{id}/reviews        | Public              | Get approved product reviews   |
+| POST   | /api/products/{id}/reviews        | Auth (User)         | Add review (after purchase)    |
+| GET    | /api/reviews/{id}                 | Auth (User)         | Get single review (owner only) |
+| PUT    | /api/reviews/{id}                 | Auth (User)         | Update own review (before approval) |
+| DELETE | /api/reviews/{id}                 | Auth (User)         | Delete own review              |
+| GET    | /api/admin/reviews                | Admin only          | Get all reviews (with filters) |
+| PUT    | /api/admin/reviews/{id}/approve   | Admin only          | Approve review                 |
+
+⭐ Reviews Features:
+- ✅ User can only review products they have purchased
+- ✅ One review per product per user (unique constraint)
+- ✅ Rating from 1 to 5 stars (required)
+- ✅ Comment up to 1000 characters (optional)
+- ✅ Images support (max 5 images)
+- ✅ Review requires admin approval (is_approved = false by default)
+- ✅ User can edit/delete own review only before approval
+- ✅ Admin can approve any review
+- ✅ Approved reviews visible to public
+- ✅ Product model has average_rating accessor
+- ✅ Validation for duplicate reviews and un-purchased products
 
 ================================================================================
-                        9. REVIEWS APIs (Coming Soon)
+                        9. NOTIFICATIONS APIs (7) ✅ COMPLETED
 ================================================================================
 
-| Method | Endpoint                          | Access              | Description              |
-|--------|-----------------------------------|---------------------|--------------------------|
-| GET    | /api/products/{id}/reviews        | Public              | Get product reviews      |
-| POST   | /api/products/{id}/reviews        | Auth (User)         | Add review (after purchase) |
-| PUT    | /api/reviews/{id}                 | Auth (User)         | Update own review        |
-| DELETE | /api/reviews/{id}                 | Auth (User)         | Delete own review        |
-| PUT    | /api/reviews/{id}/approve         | Admin only          | Approve review           |
+| Method | Endpoint                          | Access              | Description                    |
+|--------|-----------------------------------|---------------------|--------------------------------|
+| GET    | /api/notifications                | Auth (User)         | Get user notifications (paginated) |
+| GET    | /api/notifications/unread         | Auth (User)         | Get unread notifications only  |
+| GET    | /api/notifications/unread/count   | Auth (User)         | Get unread notifications count |
+| GET    | /api/notifications/{id}           | Auth (User)         | Get single notification        |
+| PUT    | /api/notifications/{id}/read      | Auth (User)         | Mark notification as read      |
+| PUT    | /api/notifications/read-all       | Auth (User)         | Mark all notifications as read |
+| DELETE | /api/notifications/{id}           | Auth (User)         | Delete notification            |
+
+🔔 Notifications Features:
+- ✅ User can only access their own notifications
+- ✅ Unread count returned with index response
+- ✅ Prevent marking already read notifications (returns 400)
+- ✅ Read_at timestamp automatically set when marking as read
+- ✅ Cascade delete when user is deleted
+- ✅ Service-Repository pattern applied
+- ✅ NotificationSeeder with sample data for all users
+- ✅ Types: order updates, promotions, low stock alerts, admin alerts
 
 ================================================================================
                         10. COUPONS APIs (Coming Soon)
@@ -196,8 +222,10 @@
 | Cart              | 5         | ✅ Completed  |
 | Addresses         | 4         | ✅ Completed  |
 | Orders            | 6         | ✅ Completed  |
+| Reviews           | 7         | ✅ Completed  |
+| Notifications     | 7         | ✅ Completed  |
 |-------------------|-----------|---------------|
-| TOTAL COMPLETED   | 43        | 🎉            |
+| TOTAL COMPLETED   | 57        | 🎉            |
 
 ================================================================================
                         🗂️ DATABASE SCHEMA (15 Tables)
@@ -227,12 +255,10 @@
 
 | Priority | Module            | Endpoints | Estimated Time |
 |----------|-------------------|-----------|----------------|
-| 1        | Reviews API       | 5         | 2 hours        |
-| 2        | Notifications API | 5         | 1.5 hours      |
-| 3        | Coupons API       | 5         | 2 hours        |
-| 4        | Admin Dashboard   | 5         | 2 hours        |
+| 1        | Coupons API       | 5         | 2 hours        |
+| 2        | Admin Dashboard   | 5         | 2 hours        |
 |----------|-------------------|-----------|----------------|
-| Total    |                   | 20        | 7.5 hours      |
+| Total    |                   | 10        | 4 hours        |
 
 ================================================================================
                         🛠️ TECHNICAL STACK
@@ -279,5 +305,8 @@ Error Response:
 6. 🎯 Service-Repository pattern applied
 7. ✅ All exceptions handled with try-catch
 8. 🚀 Eager loading for performance optimization
+9. ⭐ Reviews use accessor for average_rating (no DB columns)
+10. 📦 Seeders available for all tables
+11. 🔔 Notifications support unread count and batch read operations
 
 ================================================================================

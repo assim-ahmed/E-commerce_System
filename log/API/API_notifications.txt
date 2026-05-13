@@ -1,0 +1,10 @@
+📋 Notifications API - مختصر الـ Endpoints
+✅ الـ Endpoints (7 Endpoints)
+Method	Endpoint			الوصف	
+GET	/api/notifications		كل الإشعارات (مع pagination)
+GET	/api/notifications/unread	الإشعارات غير المقروءة فقط
+GET	/api/notifications/unread/count	عدد الإشعارات غير المقروءة
+GET	/api/notifications/{id}		عرض إشعار معين
+PUT	/api/notifications/{id}/read	تحديد إشعار كمقروء
+PUT	/api/notifications/read-all	تحديد كل الإشعارات كمقروءة
+DELETE	/api/notifications/{id}		حذف إشعار
