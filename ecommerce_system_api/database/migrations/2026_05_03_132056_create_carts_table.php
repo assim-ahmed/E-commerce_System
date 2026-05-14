@@ -13,13 +13,25 @@ return new class extends Migration
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->string('cookie_id')->unique();  // للزوار مع تخزين طويل الأمد
+            
+            // دعم المستخدمين المسجلين والزوار
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+            $table->string('cookie_id')->nullable()->unique();
+            
+            // أعمدة الخصم والكوبونات
+            $table->string('coupon_code')->nullable();
+            $table->enum('coupon_type', ['fixed', 'percentage'])->nullable();
+            $table->decimal('coupon_value', 12, 2)->nullable();
+            $table->decimal('discount_amount', 12, 2)->default(0);
+            $table->decimal('subtotal', 12, 2)->default(0);
+            $table->decimal('total', 12, 2)->default(0);
+            
             $table->timestamps();
-
+            
+            // Indexes لتحسين الأداء
             $table->index('user_id');
             $table->index('cookie_id');
-            $table->index('updated_at');  // لتنظيف السلات القديمة
+            $table->index('coupon_code');
         });
     }
 

@@ -23,10 +23,20 @@ return new class extends Migration
                 'cancelled',
                 'refunded'
             ])->default('pending');
-            $table->decimal('total', 12, 2);
+
+            // الأعمدة المالية بالترتيب المنطقي
+            $table->decimal('subtotal', 12, 2)->default(0);           // إجمالي قبل الخصم
+            $table->decimal('discount_amount', 12, 2)->default(0);    // قيمة الخصم
+            $table->decimal('total', 12, 2);                          // الإجمالي بعد الخصم
+
+            // أعمدة الكوبون (Snapshot)
             $table->string('coupon_code')->nullable();
+            $table->enum('coupon_type', ['fixed', 'percentage'])->nullable();
+            $table->decimal('coupon_value', 12, 2)->nullable();
+
             $table->timestamps();
 
+            // Indexes
             $table->index('order_number');
             $table->index('user_id');
             $table->index('status');

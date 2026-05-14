@@ -13,17 +13,36 @@ return new class extends Migration
     {
         Schema::create('coupons', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->unique();
-            $table->string('name');
-            $table->enum('type', ['fixed', 'percentage']);
-            $table->decimal('value', 12, 2);
-            $table->decimal('minimum_order_amount', 12, 2)->nullable();
-            $table->date('start_date');
-            $table->date('end_date');
+            
+            // معلومات الكوبون الأساسية
+            $table->string('code')->unique();              // كود الكوبون (WELCOME10, SAVE50, ...)
+            $table->enum('type', ['fixed', 'percentage']); // نوع الخصم: ثابت أو نسبة مئوية
+            $table->decimal('value', 12, 2);               // قيمة الخصم (50 جنيه أو 10%)
+            
+            // شروط الاستخدام
+            $table->decimal('minimum_order_amount', 12, 2)->nullable(); // الحد الأدنى للطلب (اختياري)
+            
+            // تواريخ الصلاحية
+            $table->dateTime('start_date')->nullable();    // تاريخ البدء (اختياري)
+            $table->dateTime('end_date')->nullable();      // تاريخ الانتهاء (اختياري)
+            
+            // استخدامات الكوبون
+            $table->integer('usage_limit')->nullable();    // أقصى عدد مرات للاستخدام (اختياري)
+            $table->integer('used_count')->default(0);     // عدد مرات الاستخدام الفعلية
+            
+            // حالة الكوبون
+            $table->boolean('is_active')->default(true);   // مفعل/غير مفعل
+            
+            // حقل للملاحظات (اختياري)
+            $table->text('description')->nullable();
+            
             $table->timestamps();
-
+            
+            // Indexes لتحسين الأداء
             $table->index('code');
+            $table->index('is_active');
             $table->index(['start_date', 'end_date']);
+            $table->index('type');
         });
     }
 
