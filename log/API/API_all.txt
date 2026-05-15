@@ -2,9 +2,9 @@
                     E-COMMERCE API - COMPLETE APIs SUMMARY
 ================================================================================
 
-📅 Last Updated: 2026-05-13
+📅 Last Updated: 2026-05-15
 👨‍💻 Status: In Progress
-🎯 Total APIs Completed: 57
+🎯 Total APIs Completed: 72
 
 ================================================================================
                         1. AUTHENTICATION APIs (7)
@@ -63,7 +63,7 @@
 | GET    | /api/products/low-stock           | Admin only | Low stock products       |
 
 ================================================================================
-                        5. CART APIs (5)
+                        5. CART APIs (7)
 ================================================================================
 
 | Method | Endpoint                          | Access              | Description              |
@@ -73,18 +73,8 @@
 | PUT    | /api/cart/items/{id}              | Public (Guest/User) | Update item quantity     |
 | DELETE | /api/cart/items/{id}              | Public (Guest/User) | Remove item from cart    |
 | DELETE | /api/cart/clear                   | Public (Guest/User) | Clear entire cart        |
-
-🛒 Cart Features:
-- ✅ Guest cart support with auto-generated cookie
-- ✅ User cart with Sanctum authentication
-- ✅ Product variants support (color, size, capacity)
-- ✅ Stock validation before adding
-- ✅ Prevent duplicate product in cart (returns 422)
-- ✅ Update quantity with stock check
-- ✅ Price snapshot stored at add time
-- ✅ Current price display with change alert
-- ✅ Merge guest cart with user cart on login
-- ✅ Proper exception handling (try-catch)
+| POST   | /api/cart/apply-coupon            | Auth + Verified       | Apply coupon to cart     |
+| DELETE | /api/cart/coupon                  | Auth + Verified       | Remove coupon from cart  |
 
 ================================================================================
                         6. ADDRESSES APIs (4)
@@ -97,12 +87,6 @@
 | PUT    | /api/addresses/{id}               | Auth (User)         | Update address           |
 | DELETE | /api/addresses/{id}               | Auth (User)         | Delete address           |
 
-🏠 Address Features:
-- ✅ Auto-set default address for first address
-- ✅ Only one default address per user
-- ✅ Validation for required fields
-- ✅ New default auto-assigned if default is deleted
-
 ================================================================================
                         7. ORDERS APIs (6)
 ================================================================================
@@ -112,102 +96,64 @@
 | GET    | /api/orders                       | Auth (User)         | Get user orders             |
 | GET    | /api/orders/{id}                  | Auth (User)         | Get single order            |
 | POST   | /api/orders                       | Auth (User)         | Create order from cart      |
-| DELETE | /api/orders/{id}/cancel           | Auth (User)         | Cancel order (pending/processing) |
+| DELETE | /api/orders/{id}/cancel           | Auth (User)         | Cancel order                |
 | PUT    | /api/orders/{id}/status           | Admin only          | Update order status         |
 | GET    | /api/admin/orders                 | Admin only          | Get all orders              |
 
-📦 Order Features:
-- ✅ Create order from cart with address validation
-- ✅ Price snapshot stored in order_items
-- ✅ Stock deducted automatically on order creation
-- ✅ Inventory logs recorded for each sale
-- ✅ Cart cleared after successful order
-- ✅ Order number auto-generated (ORD-xxxxx)
-- ✅ Status transitions validation
-- ✅ Prevent cancellation of completed orders
-- ✅ Admin can update status
-- ✅ Eager loading for performance
-
-📊 Order Status Flow:
-    pending → processing → completed
-    pending → cancelled
-    processing → cancelled
-    (completed and cancelled are final states)
-
 ================================================================================
-                        8. REVIEWS APIs (7) ✅ COMPLETED
+                        8. REVIEWS APIs (7)
 ================================================================================
 
 | Method | Endpoint                          | Access              | Description                    |
 |--------|-----------------------------------|---------------------|--------------------------------|
 | GET    | /api/products/{id}/reviews        | Public              | Get approved product reviews   |
 | POST   | /api/products/{id}/reviews        | Auth (User)         | Add review (after purchase)    |
-| GET    | /api/reviews/{id}                 | Auth (User)         | Get single review (owner only) |
-| PUT    | /api/reviews/{id}                 | Auth (User)         | Update own review (before approval) |
+| GET    | /api/reviews/{id}                 | Auth (User)         | Get single review              |
+| PUT    | /api/reviews/{id}                 | Auth (User)         | Update own review              |
 | DELETE | /api/reviews/{id}                 | Auth (User)         | Delete own review              |
-| GET    | /api/admin/reviews                | Admin only          | Get all reviews (with filters) |
+| GET    | /api/admin/reviews                | Admin only          | Get all reviews                |
 | PUT    | /api/admin/reviews/{id}/approve   | Admin only          | Approve review                 |
 
-⭐ Reviews Features:
-- ✅ User can only review products they have purchased
-- ✅ One review per product per user (unique constraint)
-- ✅ Rating from 1 to 5 stars (required)
-- ✅ Comment up to 1000 characters (optional)
-- ✅ Images support (max 5 images)
-- ✅ Review requires admin approval (is_approved = false by default)
-- ✅ User can edit/delete own review only before approval
-- ✅ Admin can approve any review
-- ✅ Approved reviews visible to public
-- ✅ Product model has average_rating accessor
-- ✅ Validation for duplicate reviews and un-purchased products
-
 ================================================================================
-                        9. NOTIFICATIONS APIs (7) ✅ COMPLETED
+                        9. NOTIFICATIONS APIs (7)
 ================================================================================
 
 | Method | Endpoint                          | Access              | Description                    |
 |--------|-----------------------------------|---------------------|--------------------------------|
-| GET    | /api/notifications                | Auth (User)         | Get user notifications (paginated) |
-| GET    | /api/notifications/unread         | Auth (User)         | Get unread notifications only  |
-| GET    | /api/notifications/unread/count   | Auth (User)         | Get unread notifications count |
+| GET    | /api/notifications                | Auth (User)         | Get user notifications         |
+| GET    | /api/notifications/unread         | Auth (User)         | Get unread notifications       |
+| GET    | /api/notifications/unread/count   | Auth (User)         | Get unread count               |
 | GET    | /api/notifications/{id}           | Auth (User)         | Get single notification        |
-| PUT    | /api/notifications/{id}/read      | Auth (User)         | Mark notification as read      |
-| PUT    | /api/notifications/read-all       | Auth (User)         | Mark all notifications as read |
+| PUT    | /api/notifications/{id}/read      | Auth (User)         | Mark as read                   |
+| PUT    | /api/notifications/read-all       | Auth (User)         | Mark all as read               |
 | DELETE | /api/notifications/{id}           | Auth (User)         | Delete notification            |
 
-🔔 Notifications Features:
-- ✅ User can only access their own notifications
-- ✅ Unread count returned with index response
-- ✅ Prevent marking already read notifications (returns 400)
-- ✅ Read_at timestamp automatically set when marking as read
-- ✅ Cascade delete when user is deleted
-- ✅ Service-Repository pattern applied
-- ✅ NotificationSeeder with sample data for all users
-- ✅ Types: order updates, promotions, low stock alerts, admin alerts
-
 ================================================================================
-                        10. COUPONS APIs (5) ✅ COMPLETED
+                        10. COUPONS APIs (6)
 ================================================================================
 
 | Method | Endpoint                          | Access              | Description              |
 |--------|-----------------------------------|---------------------|--------------------------|
 | GET    | /api/coupons/validate/{code}      | Public              | Validate coupon          |
 | GET    | /api/admin/coupons                | Admin only          | List all coupons         |
+| GET    | /api/admin/coupons/active         | Admin only          | Get active coupons       |
+| GET    | /api/admin/coupons/{id}           | Admin only          | Get single coupon        |
 | POST   | /api/admin/coupons                | Admin only          | Create coupon            |
 | PUT    | /api/admin/coupons/{id}           | Admin only          | Update coupon            |
 | DELETE | /api/admin/coupons/{id}           | Admin only          | Delete coupon            |
 
 ================================================================================
-                        11. ADMIN DASHBOARD APIs (Coming Soon)
+                        11. ADMIN DASHBOARD APIs (6) ✅ NEW
 ================================================================================
 
 | Method | Endpoint                          | Access              | Description              |
 |--------|-----------------------------------|---------------------|--------------------------|
-| GET    | /api/admin/dashboard/stats        | Admin only          | Get dashboard statistics |
-| GET    | /api/admin/dashboard/sales        | Admin only          | Sales reports            |
+| GET    | /api/admin/dashboard/stats        | Admin only          | Overall statistics       |
+| GET    | /api/admin/dashboard/sales        | Admin only          | Sales reports (period)   |
 | GET    | /api/admin/dashboard/top-products | Admin only          | Best selling products    |
 | GET    | /api/admin/dashboard/recent-orders| Admin only          | Recent orders            |
 | GET    | /api/admin/dashboard/inventory    | Admin only          | Inventory summary        |
+| POST   | /api/admin/dashboard/clear-cache  | Admin only          | Clear dashboard cache    |
 
 ================================================================================
                         📊 TOTAL APIs COMPLETED
@@ -219,95 +165,14 @@
 | Categories        | 6         | ✅ Completed  |
 | Brands            | 6         | ✅ Completed  |
 | Products          | 9         | ✅ Completed  |
-| Cart              | 5         | ✅ Completed  |
+| Cart              | 7         | ✅ Completed  |
 | Addresses         | 4         | ✅ Completed  |
 | Orders            | 6         | ✅ Completed  |
 | Reviews           | 7         | ✅ Completed  |
 | Notifications     | 7         | ✅ Completed  |
-| Coupon            | 5         | ✅ Completed  |
+| Coupons           | 7         | ✅ Completed  |
+| Dashboard         | 6         | ✅ Completed  |
 |-------------------|-----------|---------------|
-| TOTAL COMPLETED   | 62        | 🎉            |
-
-================================================================================
-                        🗂️ DATABASE SCHEMA (15 Tables)
-================================================================================
-
-| #  | Table Name          | Description                          |
-|----|---------------------|--------------------------------------|
-| 1  | users               | Admin + Customers                    |
-| 2  | addresses           | User shipping addresses              |
-| 3  | categories          | Product categories                   |
-| 4  | brands              | Product brands                       |
-| 5  | products            | Products with stock                  |
-| 6  | product_variants    | Variants (color, size, capacity)     |
-| 7  | coupons             | Discount coupons                     |
-| 8  | carts               | Shopping carts (guest + user)        |
-| 9  | cart_items          | Items in cart with price snapshot    |
-| 10 | orders              | Customer orders                      |
-| 11 | order_items         | Order items with price snapshot      |
-| 12 | reviews             | Product reviews (after purchase)     |
-| 13 | inventory_logs      | Stock movement logs                  |
-| 14 | notifications       | User notifications                   |
-| 15 | failed_jobs         | Laravel default                      |
-
-================================================================================
-                        🚀 NEXT STEPS (Priority Order)
-================================================================================
-
-| Priority | Module            | Endpoints | Estimated Time |
-|----------|-------------------|-----------|----------------|
-| 1        | Coupons API       | 5         | 2 hours        |
-| 2        | Admin Dashboard   | 5         | 2 hours        |
-|----------|-------------------|-----------|----------------|
-| Total    |                   | 10        | 4 hours        |
-
-================================================================================
-                        🛠️ TECHNICAL STACK
-================================================================================
-
-| Component          | Technology                          |
-|--------------------|-------------------------------------|
-| Backend Framework  | Laravel 12+                         |
-| PHP Version        | 8.2+                                |
-| Database           | MySQL 8.0+                          |
-| Authentication     | Laravel Sanctum                     |
-| API Style          | RESTful                             |
-| Architecture       | Service-Repository Pattern          |
-| Response Format    | JSON (standardized)                 |
-
-================================================================================
-                        📝 STANDARD RESPONSE FORMAT
-================================================================================
-
-Success Response:
-{
-    "success": true,
-    "data": {},
-    "message": "Operation completed successfully"
-}
-
-Error Response:
-{
-    "success": false,
-    "data": null,
-    "message": "Something went wrong",
-    "errors": {}
-}
-
-================================================================================
-                        👨‍💻 PROJECT NOTES
-================================================================================
-
-1. ⚠️ No SoftDeletes used (database has no deleted_at columns)
-2. 🔒 Admin middleware protects admin-only endpoints
-3. 🍪 Cart cookie auto-generated for guest users
-4. 📸 Price snapshots protect orders from price changes
-5. 📊 Database indexes for 100,000+ products performance
-6. 🎯 Service-Repository pattern applied
-7. ✅ All exceptions handled with try-catch
-8. 🚀 Eager loading for performance optimization
-9. ⭐ Reviews use accessor for average_rating (no DB columns)
-10. 📦 Seeders available for all tables
-11. 🔔 Notifications support unread count and batch read operations
+| TOTAL COMPLETED   | 72        | 🎉            |
 
 ================================================================================

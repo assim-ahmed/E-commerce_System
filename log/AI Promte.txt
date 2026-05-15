@@ -1,0 +1,632 @@
+عايزك تساعدني في المشروع 
+عرفع ليك كل المعلومات التي تخص المشروع 
+افهمها وحلل الداتا دي كويس 
+واي تعديل تشتغل عليه يبقي بموافقه مني 
+ولا تغير في الي هيكل اساسي من المشروع 
+
+## Project Definition Document
+
+---
+
+## 1. معلومات المشروع الأساسية
+
+| العنصر | التفاصيل |
+|--------|----------|
+| **اسم المشروع** | E-commerce API |
+| **نوع المشروع** | متجر إلكتروني (Single Vendor) |
+| **التقنيات المستخدمة** | Laravel + PHP + MySQL + React (Frontend منفصل) |
+| **نوع الـ API** | RESTful مع مرونة (Flexible REST) |
+| **البنية المعمارية** | Service - Repository Pattern |
+| **المرحلة الحالية** | ✅ اكتمل تصميم قاعدة البيانات |
+
+---
+
+## 2. وصف المشروع (Project Description)
+
+### **الرؤية العامة:**
+بناء REST API احترافي لمتجر إلكتروني متكامل، يعمل كـ backend لتطبيق React منفصل، مع التركيز على:
+
+- **الأداء العالي** (يدعم 100,000+ منتج)
+- **الأمان** (صلاحيات محكمة، rate limiting)
+- **سهولة التوسع** (Service-Repository Pattern)
+- **المرونة** (API قابل للتعديل والتوسع)
+
+### **المستخدمون المستهدفون:**
+| المستخدم | الوصف |
+|----------|-------|
+| **Admin** | مالك المتجر (بائع واحد فقط)، يدير كل شيء |
+| **Customer** | المستخدم العادي الذي يشتري المنتجات |
+
+### **الميزات الرئيسية للمشروع:**
+
+| # | الميزة | الوصف |
+|---|--------|-------|
+| 1 | **نظام المنتجات** | منتجات مع تصنيفات، ماركات، صور، مواصفات |
+| 2 | **متغيرات المنتج** | دعم الألوان، المقاسات، السعات بأسعار مختلفة |
+| 3 | **سلة المشتريات** | تدعم الزوار (cookie) والمسجلين (user_id) |
+| 4 | **الطلبات** | إنشاء طلبات، تعديلها، تتبع حالتها |
+| 5 | **الكوبونات** | نظام خصومات بسيط (نسبة مئوية أو قيمة ثابتة) |
+| 6 | **التقييمات** | تقييم المنتجات بعد الشراء فقط |
+| 7 | **نظام المخزون** | تتبع المخزون مع تحذير عند الوصول للحد الأدنى |
+| 8 | **الإشعارات** | إشعارات للمستخدمين (طلبات، مخزون، الخ) |
+| 9 | **لوحة تحكم Admin** | إدارة كل شيء من مكان واحد |
+
+_________________________________
+## 6. المهام القادمة (Next Steps)
+
+- [1] إعداد مشروع Laravel
+- [1] تنفيذ الـ Migrations
+- [1] بناء نظام المصادقة (Authentication)
+- [1] إنشاء الـ Models والعلاقات
+- [1] تطبيق Service - Repository Pattern
+- [1] بناء API المنتجات
+- [1] بناء API السلة
+- [1] بناء API الطلبات والكوبونات
+- [ ] بناء نظام التقييمات والإشعارات
+- [ ] بناء لوحة تحكم الـ Admin
+- [ ] اختبار الـ API
+
+---
+
+## 7. ملاحظات مهمة
+
+| النقطة | التفاصيل |
+|--------|----------|
+| **الأداء** | تم إضافة indexes لجميع الحقول المستخدمة في البحث والفرز لاستيعاب 100,000+ منتج |
+| **المخزون** | نظام متكامل مع سجل حركة (inventory_logs) وتحذير للمخزون المنخفض |
+| **الطلبات** | تخزن نسخة (snapshot) من بيانات المنتج لحماية الطلب من تغير الأسعار لاحقاً |
+| **السلة** | تدعم الزوار عبر cookie_id وحفظ طويل الأمد |
+| **التقييمات** | لا يمكن التقييم إلا بعد شراء المنتج (مرتبط بـ order_id) |
+
+---
+📋 E-commerce API - Project Context Document
+🎯 1. هدف المشروع
+بناء REST API احترافي لمتجر إلكتروني (بائع واحد - Single Vendor) باستخدام:
+
+العنصر	التفاصيل
+Backend	Laravel + PHP + MySQL
+Frontend	React (منفصل، خارج نطاق هذا الـ API)
+نوع الـ API	RESTful مع مرونة
+البنية المعمارية	Service - Repository Pattern (قيد التنفيذ)
+📊 2. قاعدة البيانات (Database Schema)
+2.1 إحصائيات عامة
+العنصر	العدد
+عدد الجداول	15 جدول
+عدد العلاقات (Foreign Keys)	17 علاقة
+تدعم عدد منتجات	100,000+
+نظام التخزين	MySQL
+2.2 قائمة الجداول
+#	اسم الجدول	الغرض
+1	users	تخزين بيانات المستخدمين (Admin + Customers)
+2	addresses	عناوين المستخدمين
+3	categories	تصنيفات المنتجات
+4	brands	ماركات المنتجات
+5	products	المنتجات الأساسية
+6	product_variants	متغيرات المنتج (لون، مقاس، سعة)
+7	coupons	كوبونات الخصم
+8	carts	سلة المشتريات
+9	cart_items	محتويات السلة
+10	orders	الطلبات
+11	order_items	محتويات الطلبات (مع نسخة من البيانات)
+12	reviews	تقييمات المستخدمين
+13	inventory_logs	سجل حركة المخزون
+14	notifications	إشعارات المستخدمين
+15	failed_jobs	جدول Laravel الافتراضي
+2.3 تفاصيل الجداول
+جدول users
+العمود	النوع	ملاحظات
+id	PK	
+name	string	
+email	string	unique
+password	string	
+role	enum	admin / customer
+is_active	boolean	default true
+جدول addresses
+العمود	النوع
+id	PK
+user_id	FK → users.id
+address_line_1	string
+city	string
+country	string
+is_default	boolean
+جدول categories
+العمود	النوع
+id	PK
+name	string
+slug	string (unique)
+description	string (nullable)
+جدول brands
+العمود	النوع
+id	PK
+name	string
+slug	string (unique)
+جدول products
+العمود	النوع
+id	PK
+name	string
+slug	string (unique)
+description	text
+short_description	string
+category_id	FK → categories.id
+brand_id	FK → brands.id
+base_price	decimal(12,2)
+compare_price	decimal(12,2)
+stock_quantity	integer
+low_stock_threshold	integer (default 5)
+is_low_stock	boolean (محسوب آلياً)
+sku	string (unique)
+is_featured	boolean
+views_count	integer
+images	json
+specifications	json
+جدول product_variants
+العمود	النوع
+id	PK
+product_id	FK → products.id
+name	string
+attributes	json
+price_adjustment	decimal
+stock_quantity	integer
+جدول coupons
+العمود	النوع
+id	PK
+code	string (unique)
+type	enum (fixed / percentage)
+value	decimal
+minimum_order_amount	decimal (nullable)
+start_date	date
+end_date	date
+جدول carts
+العمود	النوع
+id	PK
+user_id	FK → users.id (nullable)
+cookie_id	string (unique)
+جدول cart_items
+العمود	النوع
+id	PK
+cart_id	FK → carts.id
+product_id	FK → products.id
+product_variant_id	FK → product_variants.id (nullable)
+quantity	integer
+price_at_time	decimal
+جدول orders
+العمود	النوع
+id	PK
+order_number	string (unique)
+user_id	FK → users.id
+address_id	FK → addresses.id
+status	enum
+total	decimal
+coupon_code	string (nullable)
+جدول order_items
+العمود	النوع
+id	PK
+order_id	FK → orders.id
+product_variant_id	FK → product_variants.id (nullable)
+product_id	FK → products.id
+product_name_snapshot	string
+price_snapshot	decimal
+quantity	integer
+total	decimal
+جدول reviews
+العمود	النوع
+id	PK
+user_id	FK → users.id
+product_id	FK → products.id
+order_id	FK → orders.id
+rating	tinyint (1-5)
+comment	text
+images	json (nullable)
+is_approved	boolean
+جدول inventory_logs
+العمود	النوع
+id	PK
+product_id	FK → products.id
+product_variant_id	FK → product_variants.id (nullable)
+type	enum (purchase/sale/return/adjustment)
+quantity_change	integer
+quantity_before	integer
+quantity_after	integer
+جدول notifications
+العمود	النوع
+id	PK
+user_id	FK → users.id
+title	string
+message	text
+is_read	boolean
+2.4 العلاقات بين الجداول
+text
+users
+├── addresses (1 : many)
+├── carts (1 : 1)
+├── orders (1 : many)
+├── reviews (1 : many)
+└── notifications (1 : many)
+
+categories └── products (1 : many)
+brands └── products (1 : many)
+
+products
+├── product_variants (1 : many)
+├── cart_items (1 : many)
+├── order_items (1 : many)
+└── reviews (1 : many)
+
+carts └── cart_items (1 : many)
+orders └── order_items (1 : many)
+📁 3. الموديلات (Models) المنفذة
+جميع الـ Models موجودة في app/Models/ وتشمل:
+
+#	Model	الجدول
+1	User	users
+2	Product	products
+3	Category	categories
+4	Brand	brands
+5	ProductVariant	product_variants
+6	Address	addresses
+7	Coupon	coupons
+8	Cart	carts
+9	CartItem	cart_items
+10	Order	orders
+11	OrderItem	order_items
+12	Review	reviews
+13	InventoryLog	inventory_logs
+14	Notification	notifications
+3.1 ملاحظات على الـ Models
+لا يوجد SoftDeletes في أي Model (لأن قاعدة البيانات لا تحتوي على deleted_at)
+
+جميع العلاقات معرفة (hasMany, belongsTo, hasOne)
+
+الـ Scopes معرفة للاستعلامات الشائعة
+
+الـ Methods معرفة للسلوكيات (مثل isAdmin(), markAsRead())
+
+🚀 4. خطة التنفيذ الحالية
+#	المرحلة	الحالة
+1	إعداد مشروع Laravel	✅ تم
+2	تنفيذ الـ Migrations (15 جدول)	✅ تم
+3	بناء الـ Models والعلاقات	✅ تم
+4	الـ Authentication API	🔄 تم
+5	Service-Repository Pattern	📋 تم
+6	Products API (CRUD + Search)	📋 تم
+7	Cart API	📋 تم
+8	Orders API	📋 مخطط
+9	Coupons API	📋 مخطط
+10	Reviews API	📋 مخطط
+11	Notifications API	📋 مخطط
+12	Admin Dashboard API	📋 مخطط
+🔧 5. التقنيات المستخدمة
+التقنية	الإصدار/الاستخدام
+Laravel	الإصدار الأحدث (12 أو أعلى)
+PHP	8.2+
+MySQL	8.0+
+Authentication	Laravel Sanctum
+API Style	RESTful
+Pattern	Service-Repository (قيد التطبيق)
+⚠️ 6. قواعد مهمة يجب اتباعها عند المساعدة
+لا تضيف SoftDeletes لأي Model (لأن قاعدة البيانات لا تحتوي على deleted_at)
+
+لا تغير هيكل قاعدة البيانات من عندك - التغييرات فقط بعد موافقة صاحب المشروع
+
+اتبع العلاقات المحددة في الـ Schema أعلاه
+
+الـ Authentication باستخدام Laravel Sanctum (وليس Passport أو Session)
+
+الـ API Responses يجب أن تكون بصيغة JSON موحدة:
+
+json
+{
+    "success": true,
+    "data": {},
+    "message": "",
+    "errors": {}
+}
+دعم الأداء لـ 100,000+ منتج يجب أن يؤخذ في الاعتبار (Indexes, Eager Loading)
+
+الأمان: Rate limiting, Validation, Authorization (Admin/Customer roles)
+
+🎯 7. الميزات الرئيسية للمشروع
+#	الميزة	الوصف
+1	نظام المنتجات	منتجات مع تصنيفات، ماركات، صور، مواصفات
+2	متغيرات المنتج	دعم الألوان، المقاسات، السعات بأسعار مختلفة
+3	سلة المشتريات	تدعم الزوار (cookie) والمسجلين (user_id)
+4	الطلبات	إنشاء طلبات، تعديلها، تتبع حالتها
+5	الكوبونات	نظام خصومات (نسبة مئوية أو قيمة ثابتة)
+6	التقييمات	تقييم المنتجات بعد الشراء فقط
+7	نظام المخزون	تتبع المخزون مع تحذير عند الوصول للحد الأدنى
+8	الإشعارات	إشعارات للمستخدمين
+9	لوحة تحكم Admin	إدارة كل شيء من مكان واحد
+📝 8. ملاحظات إضافية
+النقطة	التفاصيل
+المستخدمون	نوعان فقط: Admin (بائع واحد) + Customer
+السلة	تدعم الزوار عبر cookie_id وحفظ طويل الأمد
+الطلبات	تخزن نسخة (snapshot) من بيانات المنتج لحماية الطلب من تغير الأسعار
+التقييمات	لا يمكن التقييم إلا بعد شراء المنتج (مرتبط بـ order_id)
+المخزون	نظام متكامل مع سجل حركة (inventory_logs)
+الكوبونات	بسيطة، إما نسبة مئوية أو قيمة ثابتة
+🚀 9. المهمة الحالية (Current Task)
+نحن الآن في مرحلة بناء الـ APIs، والمطلوب التالي هو:
+
+Authentication API (Register, Login, Logout, Profile)
+
+Products API (CRUD + Search + Filter)
+
+يُرجى البدء من حيث توقفنا وعدم تغيير أي شيء دون الرجوع إليّ.
+
+✅ 10. مثال على تنسيق API Response
+php
+// Success Response
+return response()->json([
+    'success' => true,
+    'data' => $data,
+    'message' => 'Operation completed successfully'
+], 200);
+
+// Error Response
+return response()->json([
+    'success' => false,
+    'data' => null,
+    'message' => 'Something went wrong',
+    'errors' => $errors
+], 400);
+
+
+_________________________
+ هيكل قاعدة البيانات الحالية (Database Schema)
+
+### **إحصائيات عامة:**
+
+| العنصر | العدد |
+|--------|-------|
+| عدد الجداول | 15 جدول |
+| عدد العلاقات (Foreign Keys) | 17 علاقة |
+| جاهز لعدد المنتجات | 100,000+ |
+| نظام التخزين | MySQL |
+
+---
+
+### **4.1 قائمة الجداول (Tables List)**
+
+| # | اسم الجدول | الغرض |
+|---|------------|-------|
+| 1 | `users` | تخزين بيانات المستخدمين (Admin + Customers) |
+| 2 | `addresses` | عناوين المستخدمين (للتوصيل والفواتير) |
+| 3 | `categories` | تصنيفات المنتجات (منتج واحد ينتمي لتصنيف واحد) |
+| 4 | `brands` | ماركات المنتجات |
+| 5 | `products` | المنتجات الأساسية |
+| 6 | `product_variants` | متغيرات المنتج (لون، مقاس، سعة) |
+| 7 | `coupons` | كوبونات الخصم (نظام بسيط) |
+| 8 | `carts` | سلة المشتريات (تدعم الزوار والمسجلين) |
+| 9 | `cart_items` | محتويات سلة المشتريات |
+| 10 | `orders` | الطلبات |
+| 11 | `order_items` | محتويات الطلبات (بنسخة من البيانات وقت الشراء) |
+| 12 | `reviews` | تقييمات المستخدمين للمنتجات |
+| 13 | `inventory_logs` | سجل حركة المخزون (دخول/خروج) |
+| 14 | `notifications` | إشعارات المستخدمين |
+| 15 | `failed_jobs` | جدول Laravel الافتراضي للمهام الفاشلة |
+
+---
+
+### **4.2 تفاصيل الجداول**
+
+#### **جدول users**
+| العمود | النوع | ملاحظات |
+|--------|------|---------|
+| id | PK | |
+| name | string | |
+| email | string | unique |
+| password | string | |
+| role | enum | admin / customer |
+| remeber_token| string | |
+| is_active | boolean | default true |
+
+#### **جدول addresses**
+| العمود | النوع | ملاحظات |
+|--------|------|---------|
+| id | PK | |
+| user_id | FK → users.id | |
+| address_line_1 | string | |
+| city | string | |
+| country | string | |
+| is_default | boolean | |
+
+#### **جدول categories**
+| العمود | النوع | ملاحظات |
+|--------|------|---------|
+| id | PK | |
+| name | string | |
+| slug | string | unique |
+| description | string  |  nullable
+
+
+#### **جدول brands**
+| العمود | النوع |
+|--------|------|
+| id | PK |
+| name | string |
+| slug | string (unique) |
+
+#### **جدول products**
+| العمود | النوع | ملاحظات |
+|--------|------|---------|
+| id | PK | |
+| name | string | |
+| slug | string (unique) | |
+| description | string | |
+| short description | string | |
+| category_id | FK → categories.id | |
+| brand_id | FK → brands.id | |
+| base_price | decimal(12,2) | |
+| compare_price | decimal(12,2) | |
+| stock_quantity | integer | |
+| low_stock_threshold | integer | default 5 |
+| is_low_stock | boolean | محسوب آلياً |
+| sku | string (unique) | |
+| is_featured | boolean | |
+| views_count | integer| |
+| images | json | |
+| specifications | json | مواصفات مرنة |
+
+#### **جدول product_variants**
+| العمود | النوع | ملاحظات |
+|--------|------|---------|
+| id | PK | |
+| product_id | FK → products.id | |
+| name | string | مثال: "أحمر - XL" |
+| attributes | json | {"color":"red", "size":"XL"} |
+| price_adjustment | decimal | +/- عن السعر الأساسي |
+| stock_quantity | integer | |
+
+#### **جدول coupons**
+| العمود | النوع |
+|--------|------|
+| id | PK |
+| code | string (unique) |
+| type | enum (fixed / percentage) |
+| value | decimal |
+| minimum_order_amount | decimal (nullable) |
+| start_date | date |
+| end_date | date |
+
+#### **جدول carts**
+| العمود | النوع | ملاحظات |
+|--------|------|---------|
+| id | PK | |
+| user_id | FK → users.id | nullable (للمسجلين) |
+| cookie_id | string | unique (للزوار) |
+
+#### **جدول cart_items**
+| العمود | النوع |
+|--------|------|
+| id | PK |
+| cart_id | FK → carts.id |
+| product_id | FK → products.id |
+| product_variant_id | FK → product_variants.id (nullable) |
+| quantity | integer |
+| price_at_time | decimal |
+
+#### **جدول orders**
+| العمود | النوع |
+|--------|------|
+| id | PK |
+| order_number | string (unique) |
+| user_id | FK → users.id |
+| address_id | FK → addresses.id |
+| status | enum |
+| total | decimal |
+| coupon_code | string (nullable) |
+
+#### **جدول order_items**
+| العمود | النوع | ملاحظات |
+|--------|------|---------|
+| id | PK |
+| order_id | FK → orders.id |
+| product_variant_id | FK →product_variant.id |
+| product_id | FK → product.id |
+| product_name_snapshot | string | نسخة وقت الشراء |
+| price_snapshot | decimal | نسخة وقت الشراء |
+| quantity | integer| |
+| total| decimal|
+
+#### **جدول reviews**
+| العمود | النوع | ملاحظات |
+|--------|------|---------|
+| id | PK |
+| user_id | FK → users.id | |
+| product_id | FK → products.id | |
+| order_id | FK → orders.id | للتأكد من الشراء |
+| rating | tinyint (1-5) | |
+| comment | text | |
+| image | json| |
+| is_approved | boolean | |
+
+#### **جدول inventory_logs**
+| العمود | النوع |
+|--------|------|
+| id | PK |
+| product_id | FK → products.id |
+| product_variant_id | FK → product_variant.id |
+| type | enum (purchase/sale/return/adjustment) |
+| quantity_change | integer |
+| quantity_before | integer |
+| quantity_after | integer |
+
+#### **جدول notifications**
+| العمود | النوع |
+|--------|------|
+| id | PK |
+| user_id | FK → users.id |
+| title | string |
+| message | text |
+| is_read | boolean |
+
+---
+
+### **4.3 العلاقات بين الجداول (Relationships Map)**
+users
+├── addresses (1 : many)
+├── carts (1 : 1)
+├── orders (1 : many)
+├── reviews (1 : many)
+└── notifications (1 : many)
+
+categories
+└── products (1 : many) [منتج واحد في تصنيف واحد]
+
+brands
+└── products (1 : many)
+
+products
+├── product_variants (1 : many)
+├── cart_items (1 : many)
+├── order_items (1 : many)
+└── reviews (1 : many)
+
+carts
+└── cart_items (1 : many)
+
+orders
+├── order_items (1 : many)
+└── reviews (1 : many)
+______________
+📋 Project Context Document for AI Assistant
+أنت تعمل معي على مشروع E-commerce API باستخدام Laravel + PHP + MySQL + React (Frontend منفصل).
+
+✅ آخر ما تم إنجازه (Completed):
+🏠 Coupon API (مكتمل بالكامل)
+تم بناء نظام إدارة عناوين المستخدمين باستخدام Service-Repository Pattern.
+
+
+⚠️ ملاحظات مهمة:
+لا تستخدم SoftDeletes (لأن قاعدة البيانات لا تحتوي على deleted_at)
+
+لا تغير هيكل قاعدة البيانات بدون الرجوع إليّ
+
+اتبع العلاقات المحددة في الـ Schema الأصلي للمشروع
+
+دعم الأداء لـ 100,000+ منتج (استخدام Eager Loading، Indexes)
+
+استخدام try-catch في الـ Controller للتعامل مع الـ Exceptions
+
+
+📋 قائمة التحقق قبل البدء (Checklist):
+النقطة	الحالة
+قراءة وفهم جميع القواعد	⬜
+فهم هيكل قاعدة البيانات (جدول reviews)	⬜
+فهم العلاقات بين الـ Models	⬜
+تجهيز Service-Repository Pattern	⬜
+كتابة الـ Interfaces	⬜
+كتابة الـ Repositories	⬜
+كتابة الـ Services	⬜
+كتابة الـ Controller	⬜
+كتابة الـ Form Requests	⬜
+كتابة الـ Resources	⬜
+إضافة Routes	⬜
+تسجيل الـ Interfaces في AppServiceProvider	⬜
+اختبار الـ Endpoints	⬜
+هل أنت جاهز للبدء في بناء Reviews API؟ 🚀
+
+
+
+
+
