@@ -1,4 +1,5 @@
 <?php
+// database/seeders/ReviewSeeder.php
 
 namespace Database\Seeders;
 
@@ -6,69 +7,91 @@ use Illuminate\Database\Seeder;
 use App\Models\Review;
 use App\Models\User;
 use App\Models\Product;
+use App\Models\Order;
 use App\Models\OrderItem;
+use Carbon\Carbon;
 
 class ReviewSeeder extends Seeder
 {
     public function run(): void
     {
-        $users = User::where('role', 'customer')->get();
+        // Get completed orders with their items
+        $completedOrders = Order::where('status', 'completed')->with('items.product')->get();
         
-        foreach ($users as $user) {
-            // Get products the user purchased (from order_items)
-            $purchasedProductIds = OrderItem::whereHas('order', function ($q) use ($user) {
-                $q->where('user_id', $user->id)->where('status', 'completed');
-            })->pluck('product_id')->unique();
-            
-            $products = Product::whereIn('id', $purchasedProductIds)->get();
-            
-            foreach ($products as $product) {
-                // 60% chance to review
-                if (rand(1, 100) <= 60) {
-                    // Get the order_id for this purchase
-                    $orderItem = OrderItem::where('product_id', $product->id)
-                        ->whereHas('order', function ($q) use ($user) {
-                            $q->where('user_id', $user->id)->where('status', 'completed');
-                        })->first();
+        if ($completedOrders->isEmpty()) {
+            $this->command->warn('⚠️ No completed orders found. Run OrderSeeder and OrderItemSeeder first.');
+            return;
+        }
+        
+        $reviews = [];
+        $existingReviews = []; // To prevent duplicate reviews
+        
+        $reviewTexts = [
+            'منتج رائع جداً، أنصح به بشدة',
+            'جودة ممتازة وسعر مناسب',
+            'المنتج كما هو موصوف، شكراً',
+            'تجربة شراء ممتازة، سأكررها',
+            'منتج جيد لكن السعر مرتفع قليلاً',
+            'الخامة ممتازة والتغليف جيد',
+            'لم يعجبني المنتج، ليس كما توقعت',
+            'جيد لكن يحتاج بعض التحسينات',
+            'منتج ممتاز وسرعة في التوصيل',
+            'يستحق الشراء، أنصح به',
+        ];
+        
+        foreach ($completedOrders as $order) {
+            foreach ($order->items as $item) {
+                $product = $item->product;
+                
+                // Skip if already reviewed this product in this order
+                $reviewKey = $order->user_id . '_' . $product->id . '_' . $order->id;
+                if (in_array($reviewKey, $existingReviews)) {
+                    continue;
+                }
+                
+                // 70% chance to leave a review
+                if (rand(1, 100) <= 70) {
+                    $rating = rand(1, 5);
+                    $comment = $reviewTexts[array_rand($reviewTexts)];
                     
-                    if (!$orderItem) continue;
+                    // Add product-specific comment based on rating
+                    if ($rating >= 4) {
+                        $comment = '👍 ' . $comment;
+                    } elseif ($rating <= 2) {
+                        $comment = '👎 ' . $comment;
+                    }
                     
-                    Review::create([
-                        'user_id' => $user->id,
+                    $reviews[] = [
+                        'user_id' => $order->user_id,
                         'product_id' => $product->id,
-                        'order_id' => $orderItem->order_id,
-                        'rating' => rand(3, 5),
-                        'comment' => $this->getRandomReviewComment($product->name),
-                        'images' => null,
-                        'is_approved' => rand(0, 1) === 1, // 50% approved
-                        'created_at' => now()->subDays(rand(1, 15)),
-                    ]);
+                        'order_id' => $order->id,
+                        'rating' => $rating,
+                        'comment' => $comment,
+                        'images' => rand(0, 1) ? json_encode(['review_image_1.jpg']) : null,
+                        'is_approved' => $rating >= 3 ? true : false, // Auto-approve good reviews
+                        'created_at' => Carbon::now()->subDays(rand(0, 30)),
+                        'updated_at' => Carbon::now(),
+                    ];
+                    
+                    $existingReviews[] = $reviewKey;
                 }
             }
         }
         
-        // ❌ Comment or remove this line
-        // $this->updateProductRatings();
+        // Insert reviews
+        foreach ($reviews as $review) {
+            Review::updateOrCreate(
+                [
+                    'user_id' => $review['user_id'],
+                    'product_id' => $review['product_id'],
+                    'order_id' => $review['order_id'],
+                ],
+                $review
+            );
+        }
         
-        $this->command->info('Reviews seeded successfully! Total: ' . Review::count());
-        $this->command->info('Approved reviews: ' . Review::where('is_approved', true)->count());
+        $this->command->info('✅ Reviews seeded: ' . Review::count() . ' reviews created');
+        $this->command->info('   - Approved: ' . Review::where('is_approved', true)->count());
+        $this->command->info('   - Pending: ' . Review::where('is_approved', false)->count());
     }
-    
-    private function getRandomReviewComment($productName): string
-    {
-        $comments = [
-            "Excellent {$productName}! Very satisfied with my purchase.",
-            "Good quality product. Would recommend to others.",
-            "Nice {$productName}, works as expected.",
-            "Average product, nothing special but gets the job done.",
-            "Great value for money. Happy with this purchase.",
-            "The {$productName} exceeded my expectations!",
-            "Fast shipping and good product quality.",
-            "Decent product for the price. No complaints.",
-        ];
-        
-        return $comments[array_rand($comments)];
-    }
-    
-
 }

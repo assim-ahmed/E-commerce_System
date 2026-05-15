@@ -64,6 +64,12 @@ use App\Contracts\Services\NotificationServiceInterface;
 use App\Services\NotificationService;
 
 
+use App\Contracts\Repository\DashboardRepositoryInterface;
+use App\Repositories\DashboardRepository;
+use App\Contracts\Service\DashboardServiceInterface;
+use App\Services\DashboardService;
+
+
 class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
@@ -120,6 +126,19 @@ class AppServiceProvider extends ServiceProvider
         // Coupon
         $this->app->bind(CouponRepositoryInterface::class, CouponRepository::class);
         $this->app->bind(CouponServiceInterface::class, CouponService::class);
+
+
+         // Register Dashboard Repository
+        $this->app->bind(
+            DashboardRepositoryInterface::class,
+            DashboardRepository::class
+        );
+        
+        // Register Dashboard Service
+        $this->app->bind(
+            DashboardServiceInterface::class,
+            DashboardService::class
+        );
     }
 
 
