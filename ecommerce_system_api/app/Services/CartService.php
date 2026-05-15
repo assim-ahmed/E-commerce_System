@@ -54,14 +54,27 @@ class CartService implements CartServiceInterface
         }
 
         $subtotal = $cartWithItems->items->sum('line_total');
-        $total = $subtotal;
+
+        // ✅ إضافة: قراءة الخصم والكوبون من جدول السلة
+        $discountAmount = (float) $cartWithItems->discount_amount;
+        $couponCode = $cartWithItems->coupon_code;
+        $couponType = $cartWithItems->coupon_type;
+        $couponValue = $cartWithItems->coupon_value;
+
+        // ✅ إضافة: حساب الإجمالي بعد الخصم
+        $total = $subtotal - $discountAmount;
 
         return [
-            'cart' => $cartWithItems,
+            'cart_id' => $cartWithItems->id,
+            'items' => $cartWithItems->items,
             'subtotal' => $subtotal,
+            'discount_amount' => $discountAmount,
             'total' => $total,
-            'price_changed' => $priceChanged,
-            'items_count' => $cartWithItems->items->count()
+            'coupon_code' => $couponCode,
+            'coupon_type' => $couponType,
+            'coupon_value' => $couponValue,
+            'items_count' => $cartWithItems->items->count(),
+            'price_changed' => $priceChanged
         ];
     }
 

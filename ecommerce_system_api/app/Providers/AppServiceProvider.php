@@ -31,6 +31,16 @@ use App\Repositories\CartRepository;
 use App\Services\CartService;
 
 
+use App\Contracts\Repositories\CouponRepositoryInterface;
+use App\Repositories\CouponRepository;
+
+use App\Contracts\Services\CouponServiceInterface;
+use App\Services\CouponService;
+
+
+
+
+
 use App\Contracts\Repositories\InventoryLogRepositoryInterface;
 use App\Repositories\InventoryLogRepository;
 
@@ -105,6 +115,11 @@ class AppServiceProvider extends ServiceProvider
 
         // Register Notification Service
         $this->app->bind(NotificationServiceInterface::class, NotificationService::class);
+
+
+        // Coupon
+        $this->app->bind(CouponRepositoryInterface::class, CouponRepository::class);
+        $this->app->bind(CouponServiceInterface::class, CouponService::class);
     }
 
 

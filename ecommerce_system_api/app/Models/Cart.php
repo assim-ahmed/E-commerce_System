@@ -77,18 +77,18 @@ class Cart extends Model
     /**
      * الحصول على إجمالي السلة (يستخدم القيمة المخزنة إن وجدت)
      */
-    public function getTotalAttribute()
-    {
-        // إذا كانت القيمة total مخزنة ومحدثة، استخدمها
-        if ($this->total > 0) {
-            return $this->total;
-        }
-        
-        // وإلا احسبها من الـ items
-        return $this->items->sum(function ($item) {
-            return $item->price_at_time * $item->quantity;
-        });
+   public function getTotalAttribute()
+{
+    // إذا كانت القيمة total مخزنة ومحدثة، استخدمها
+    if (isset($this->attributes['total']) && $this->attributes['total'] > 0) {
+        return $this->attributes['total'];
     }
+    
+    // وإلا احسبها من الـ items
+    return $this->items->sum(function ($item) {
+        return $item->price_at_time * $item->quantity;
+    });
+}
 
     /**
      * عدد المنتجات في السلة (مجموع الكميات)

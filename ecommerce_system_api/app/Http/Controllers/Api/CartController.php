@@ -18,20 +18,31 @@ class CartController extends Controller
         $this->cartService = $cartService;
     }
 
-    public function index(Request $request)
-    {
-        $userId = auth('sanctum')->id();
-        $cookieId = $request->cookie('cart_cookie');
+   public function index(Request $request)
+{
+    $result = $this->cartService->getCart(
+        auth('sanctum')->id(),
+        $request->cookie('cart_cookie')
+    );
 
-        $cartData = $this->cartService->getCart($userId, $cookieId);
-
-        return response()->json([
-            'success' => true,
-            'data' => new CartResource($cartData),
-            'message' => 'Cart retrieved successfully',
-            'price_changed' => $cartData['price_changed']
-        ]);
-    }
+    return response()->json([
+        'success' => true,
+        'data' => [
+            'cart_id' => $result['cart_id'],
+            'items' => $result['items'],
+            'subtotal' => $result['subtotal'],
+            'discount_amount' => $result['discount_amount'] ?? 0,
+            'total' => $result['total'],
+            'coupon_code' => $result['coupon_code'] ?? null,
+            'coupon_type' => $result['coupon_type'] ?? null,
+            'coupon_value' => $result['coupon_value'] ?? null,
+            'items_count' => $result['items_count'],
+            'price_changed' => $result['price_changed']
+        ],
+        'message' => 'Cart retrieved successfully',
+        'price_changed' => $result['price_changed']
+    ]);
+}
 
     public function addItem(AddToCartRequest $request)
     {

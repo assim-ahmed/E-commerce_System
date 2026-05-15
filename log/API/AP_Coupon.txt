@@ -1,0 +1,86 @@
+📋 ملخص Coupon APIs
+✅ 1. التحقق من صلاحية كوبون (Public API)
+العنصر	التفاصيل
+الرابط	GET /api/coupons/validate/{code}
+المسموح لهم	Public (أي شخص - حتى غير مسجل)
+البيانات المرسلة	subtotal (query parameter) - إجمالي السلة
+مثال الطلب	/api/coupons/validate/WELCOME10?subtotal=500
+الوصف: بيستخدم عشان يشوف الكوبون صالح ولا لأ، وبيحسب قيمة الخصم المتوقعة من غير ما يطبقها فعلياً.
+
+✅ 2. تطبيق كوبون على السلة (User API)
+العنصر	التفاصيل
+الرابط	POST /api/cart/apply-coupon
+المسموح لهم	User (مستخدم مسجل الدخول + مفعل الايميل)
+البيانات المرسلة (Body)	{ "coupon_code": "WELCOME10" }
+الوصف: بيطبق الكوبون على سلة المستخدم الحالية، وبيحدث جدول carts بـ coupon_code, discount_amount, total.
+
+✅ 3. إزالة الكوبون من السلة (User API)
+العنصر	التفاصيل
+الرابط	DELETE /api/cart/coupon
+المسموح لهم	User (مستخدم مسجل الدخول + مفعل الايميل)
+البيانات المرسلة	لا يحتاج بيانات (فقط Token في الـ Header)
+الوصف: بيشيل الكوبون المطبق من السلة ويرجع total زي ما كان قبل الخصم.
+
+✅ 4. جلب كل الكوبونات (Admin API)
+العنصر	التفاصيل
+الرابط	GET /api/admin/coupons
+المسموح لهم	Admin (مدير النظام)
+البيانات المرسلة	لا يحتاج بيانات (فقط Token)
+الوصف: بيجلب كل الكوبونات الموجودة في النظام (كل الأعمدة).
+
+✅ 5. جلب الكوبونات النشطة (Admin API)
+العنصر	التفاصيل
+الرابط	GET /api/admin/coupons/active
+المسموح لهم	Admin (مدير النظام)
+البيانات المرسلة	لا يحتاج بيانات (فقط Token)
+الوصف: بيجلب فقط الكوبونات اللي is_active = true ولسه صلاحيتها سارية.
+
+✅ 6. جلب كوبون محدد (Admin API)
+العنصر	التفاصيل
+الرابط	GET /api/admin/coupons/{id}
+المسموح لهم	Admin (مدير النظام)
+البيانات المرسلة	id في الرابط
+مثال الطلب	/api/admin/coupons/1
+الوصف: بيجلب بيانات كوبون واحد محدد باستخدام الـ ID.
+
+✅ 7. إنشاء كوبون جديد (Admin API)
+العنصر	التفاصيل
+الرابط	POST /api/admin/coupons
+المسموح لهم	Admin (مدير النظام)
+البيانات المرسلة (Body)	{ "code": "NEW20", "type": "percentage", "value": 20, "minimum_order_amount": 100, "start_date": "2026-06-01", "end_date": "2026-07-01", "usage_limit": 100, "is_active": true }
+الوصف: بيعمل كوبون جديد في النظام.
+
+✅ 8. تحديث كوبون (Admin API)
+العنصر	التفاصيل
+الرابط	PUT /api/admin/coupons/{id}
+المسموح لهم	Admin (مدير النظام)
+البيانات المرسلة (Body)	{ "value": 25, "usage_limit": 200 } (أي حقل عايز تعدله)
+مثال الطلب	/api/admin/coupons/1
+الوصف: بيعدل بيانات كوبون موجود.
+
+✅ 9. حذف كوبون (Admin API)
+العنصر	التفاصيل
+الرابط	DELETE /api/admin/coupons/{id}
+المسموح لهم	Admin (مدير النظام)
+البيانات المرسلة	id في الرابط
+مثال الطلب	/api/admin/coupons/1
+الوصف: بيحذف كوبون من النظام.
+
+📊 ملخص سريع
+#	الرابط				الطريقة	المسموح لهم	يحتاج بيانات في 	Body
+1	/api/coupons/validate/{code}	GET	Public			❌ (query param: subtotal)
+2	/api/cart/apply-coupon		POST	User			✅ { "coupon_code": "..." }
+3	/api/cart/coupon		DELETE	User			❌
+4	/api/admin/coupons		GET	Admin			❌
+5	/api/admin/coupons/active	GET	Admin			❌
+6	/api/admin/coupons/{id}		GET	Admin			❌
+7	/api/admin/coupons		POST	Admin			✅ (بيانات الكوبون)
+8	/api/admin/coupons/{id}		PUT	Admin			✅ (الحقول اللي عايز تعدلها)
+9	/api/admin/coupons/{id}		DELETE	Admin			❌
+
+🎯 الخلاصة:
+Public: يقدر يتحقق من صلاحية الكوبون بس.
+
+User (مسجل): يقدر يطبق ويزيل الكوبون من سلة مشترياته.
+
+Admin: يقدر يعمل (CRUD) كامل على الكوبونات (عرض، إضافة، تعديل، حذف).

@@ -4,11 +4,12 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\Api\CartController;
+
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\ReviewController;
-
+use App\Http\Controllers\Api\CouponController;
+use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\NotificationController;
 
 
@@ -144,4 +145,26 @@ Route::middleware(['auth:sanctum'])->prefix('notifications')->group(function () 
     Route::put('/{id}/read', [NotificationController::class, 'markAsRead']);
     Route::put('/read-all', [NotificationController::class, 'markAllAsRead']);
     Route::delete('/{id}', [NotificationController::class, 'destroy']);
+});
+
+
+// ========== Coupon APIs ==========
+
+// Public APIs (No authentication)
+Route::get('/coupons/validate/{code}', [CouponController::class, 'validateCoupon']);
+
+// Authenticated User APIs
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::post('/cart/apply-coupon', [CouponController::class, 'applyCoupon']);
+    Route::delete('/cart/coupon', [CouponController::class, 'removeCoupon']);
+});
+
+// Admin APIs
+Route::middleware(['auth:sanctum', 'verified', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/coupons', [CouponController::class, 'index']);
+    Route::get('/coupons/active', [CouponController::class, 'getActiveCoupons']);
+    Route::get('/coupons/{id}', [CouponController::class, 'show']);
+    Route::post('/coupons', [CouponController::class, 'store']);
+    Route::put('/coupons/{id}', [CouponController::class, 'update']);
+    Route::delete('/coupons/{id}', [CouponController::class, 'destroy']);
 });
