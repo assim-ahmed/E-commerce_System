@@ -20,8 +20,8 @@ use App\Services\BrandService;
 
 
 use App\Contracts\Repositories\ProductRepositoryInterface;
-use App\Contracts\Services\ProductServiceInterface;
 use App\Repositories\ProductRepository;
+use App\Contracts\Services\ProductServiceInterface;
 use App\Services\ProductService;
 
 

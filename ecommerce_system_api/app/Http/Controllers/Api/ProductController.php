@@ -4,166 +4,216 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Contracts\Services\ProductServiceInterface;
 use App\Http\Requests\Product\ProductRequest;
 use App\Http\Resources\Product\ProductResource;
-use App\Http\Resources\Product\ProductCollection;
+
+use App\Contracts\Services\ProductServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class ProductController extends Controller
 {
-    protected ProductServiceInterface $productService;
-    
+    protected $productService;
+
     public function __construct(ProductServiceInterface $productService)
     {
         $this->productService = $productService;
     }
-    
-    public function index(Request $request)
+
+    public function index(Request $request): JsonResponse
     {
         $filters = $request->only([
-            'search', 'category_id', 'brand_id', 'min_price', 'max_price',
-            'is_featured', 'sort_by', 'sort_order', 'per_page'
+            'category_id', 'brand_id', 'search', 'min_price', 'max_price',
+            'featured', 'sort_by', 'sort_order', 'per_page'
         ]);
-        
-        $products = $this->productService->getProducts($filters);
-        
-        return (new ProductCollection($products))
-            ->additional(['message' => 'Products retrieved successfully']);
-    }
-    
-    public function show(int $id)
-    {
-        $product = $this->productService->getProductById($id);
-        
-        if (!$product) {
-            return response()->json([
-                'success' => false,
-                'data' => null,
-                'message' => 'Product not found',
-                'errors' => ['id' => ['No product found with ID: ' . $id]]
-            ], 404);
-        }
-        
-        $relatedProducts = $this->productService->getRelatedProducts($id);
-        
-        return (new ProductResource($product))
-            ->additional([
-                'related_products' => $relatedProducts,
-                'message' => 'Product retrieved successfully'
-            ]);
-    }
-    
-    public function showBySlug(string $slug)
-    {
-        $product = $this->productService->getProductBySlug($slug);
-        
-        if (!$product) {
-            return response()->json([
-                'success' => false,
-                'data' => null,
-                'message' => 'Product not found',
-                'errors' => ['slug' => ['No product found with slug: ' . $slug]]
-            ], 404);
-        }
-        
-        $relatedProducts = $this->productService->getRelatedProducts($product->id);
-        
-        return (new ProductResource($product))
-            ->additional([
-                'related_products' => $relatedProducts,
-                'message' => 'Product retrieved successfully'
-            ]);
-    }
-    
-    public function store(ProductRequest $request)
-    {
-        $product = $this->productService->createProduct($request->validated());
-        
-        return (new ProductResource($product))
-            ->additional(['message' => 'Product created successfully'])
-            ->response()
-            ->setStatusCode(201);
-    }
-    
-    public function update(ProductRequest $request, int $id)
-    {
-        $product = $this->productService->updateProduct($id, $request->validated());
-        
-        if (!$product) {
-            return response()->json([
-                'success' => false,
-                'data' => null,
-                'message' => 'Product not found',
-                'errors' => ['id' => ['No product found with ID: ' . $id]]
-            ], 404);
-        }
-        
-        return (new ProductResource($product))
-            ->additional(['message' => 'Product updated successfully']);
-    }
-    
-    public function destroy(int $id)
-    {
-        $deleted = $this->productService->deleteProduct($id);
-        
-        if (!$deleted) {
-            return response()->json([
-                'success' => false,
-                'data' => null,
-                'message' => 'Product not found',
-                'errors' => ['id' => ['No product found with ID: ' . $id]]
-            ], 404);
-        }
-        
+
+        $products = $this->productService->getAllProducts($filters);
+
         return response()->json([
             'success' => true,
-            'data' => null,
-            'message' => 'Product deleted successfully'
-        ], 200);
-    }
-    
-    public function updateStock(Request $request, int $id)
-    {
-        $request->validate([
-            'quantity' => 'required|integer',
-            'type' => 'required|in:purchase,sale,return,adjustment',
-            'variant_id' => 'nullable|exists:product_variants,id'
+            'data' => ProductResource::collection($products),
+            'meta' => [
+                'current_page' => $products->currentPage(),
+                'last_page' => $products->lastPage(),
+                'per_page' => $products->perPage(),
+                'total' => $products->total()
+            ],
+            'message' => 'Products retrieved successfully'
         ]);
-        
-        $product = $this->productService->updateStock($id, $request->only(['quantity', 'type', 'variant_id']));
-        
-        if (!$product) {
-            return response()->json([
-                'success' => false,
-                'data' => null,
-                'message' => 'Product not found',
-                'errors' => ['id' => ['No product found with ID: ' . $id]]
-            ], 404);
-        }
-        
-        return (new ProductResource($product))
-            ->additional([
-                'stock_quantity' => $product->stock_quantity,
-                'is_low_stock' => $product->is_low_stock,
-                'message' => 'Stock updated successfully'
-            ]);
     }
-    
-    public function featured(Request $request)
+
+    public function featured(Request $request): JsonResponse
     {
         $limit = $request->get('limit', 10);
         $products = $this->productService->getFeaturedProducts($limit);
-        
-        return (new ProductCollection($products))
-            ->additional(['message' => 'Featured products retrieved successfully']);
+
+        return response()->json([
+            'success' => true,
+            'data' => ProductResource::collection($products),
+            'message' => 'Featured products retrieved successfully'
+        ]);
     }
-    
-    public function lowStock()
+
+    public function showBySlug(string $slug): JsonResponse
+    {
+        $product = $this->productService->getProductBySlug($slug);
+
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'message' => 'Product not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => new ProductResource($product),
+            'message' => 'Product retrieved successfully'
+        ]);
+    }
+
+    public function show(int $id): JsonResponse
+    {
+        $product = $this->productService->getProductById($id);
+
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'message' => 'Product not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => new ProductResource($product),
+            'message' => 'Product retrieved successfully'
+        ]);
+    }
+
+    public function store(ProductRequest $request): JsonResponse
+    {
+        try {
+            $data = $request->validatedWithFiles();
+            $product = $this->productService->createProduct($data);
+
+            return response()->json([
+                'success' => true,
+                'data' => new ProductResource($product),
+                'message' => 'Product created successfully'
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'message' => 'Failed to create product',
+                'errors' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function update(ProductRequest $request, int $id): JsonResponse
+    {
+        try {
+            $data = $request->validatedWithFiles();
+            $product = $this->productService->updateProduct($id, $data);
+
+            if (!$product) {
+                return response()->json([
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'Product not found'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => new ProductResource($product),
+                'message' => 'Product updated successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'message' => 'Failed to update product',
+                'errors' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function destroy(int $id): JsonResponse
+    {
+        try {
+            $deleted = $this->productService->deleteProduct($id);
+
+            if (!$deleted) {
+                return response()->json([
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'Product not found'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => null,
+                'message' => 'Product deleted successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'message' => 'Failed to delete product',
+                'errors' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateStock(Request $request, int $id): JsonResponse
+    {
+        $request->validate([
+            'stock_quantity' => 'required|integer|min:0'
+        ]);
+
+        try {
+            $product = $this->productService->updateProductStock($id, $request->stock_quantity);
+
+            if (!$product) {
+                return response()->json([
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'Product not found'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => new ProductResource($product),
+                'message' => 'Stock updated successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'message' => 'Failed to update stock',
+                'errors' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function lowStock(): JsonResponse
     {
         $products = $this->productService->getLowStockProducts();
-        
-        return (new ProductCollection($products))
-            ->additional(['message' => 'Low stock products retrieved successfully']);
+
+        return response()->json([
+            'success' => true,
+            'data' => ProductResource::collection($products),
+            'message' => 'Low stock products retrieved successfully'
+        ]);
     }
 }

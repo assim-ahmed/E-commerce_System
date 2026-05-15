@@ -1,0 +1,40 @@
+# Auth
+POST   /api/logout
+GET    /api/profile
+PUT    /api/profile
+
+# Addresses
+GET    /api/addresses
+POST   /api/addresses
+PUT    /api/addresses/{id}
+DELETE /api/addresses/{id}
+
+# Cart
+GET    /api/cart
+POST   /api/cart/items
+PUT    /api/cart/items/{id}
+DELETE /api/cart/items/{id}
+DELETE /api/cart/clear
+POST   /api/cart/apply-coupon
+DELETE /api/cart/coupon
+
+# Orders
+GET    /api/orders
+GET    /api/orders/{id}
+POST   /api/orders
+DELETE /api/orders/{id}/cancel
+
+# Reviews
+POST   /api/products/{id}/reviews
+GET    /api/reviews/{id}
+PUT    /api/reviews/{id}
+DELETE /api/reviews/{id}
+
+# Notifications
+GET    /api/notifications
+GET    /api/notifications/unread
+GET    /api/notifications/unread/count
+GET    /api/notifications/{id}
+PUT    /api/notifications/{id}/read
+PUT    /api/notifications/read-all
+DELETE /api/notifications/{id}

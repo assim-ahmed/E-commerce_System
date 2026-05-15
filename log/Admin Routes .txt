@@ -1,0 +1,40 @@
+# Categories
+POST   /api/categories
+PUT    /api/categories/{id}
+DELETE /api/categories/{id}
+
+# Brands
+POST   /api/brands
+PUT    /api/brands/{id}
+DELETE /api/brands/{id}
+
+# Products
+POST   /api/products
+PUT    /api/products/{id}
+DELETE /api/products/{id}
+POST   /api/products/{id}/stock
+GET    /api/products/low-stock
+
+# Orders
+PUT    /api/orders/{id}/status
+GET    /api/admin/orders
+
+# Reviews
+GET    /api/admin/reviews
+PUT    /api/admin/reviews/{id}/approve
+
+# Coupons
+GET    /api/admin/coupons
+GET    /api/admin/coupons/active
+GET    /api/admin/coupons/{id}
+POST   /api/admin/coupons
+PUT    /api/admin/coupons/{id}
+DELETE /api/admin/coupons/{id}
+
+# Dashboard 
+GET    /api/admin/dashboard/stats
+GET    /api/admin/dashboard/sales?period=monthly
+GET    /api/admin/dashboard/top-products?limit=10
+GET    /api/admin/dashboard/recent-orders?limit=10
+GET    /api/admin/dashboard/inventory
+POST   /api/admin/dashboard/clear-cache

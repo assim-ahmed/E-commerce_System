@@ -48,6 +48,7 @@ Route::prefix('products')->group(function () {
     Route::get('/{id}', [ProductController::class, 'show']);
 });
 
+
 // Coupons Public Routes
 Route::get('/coupons/validate/{code}', [CouponController::class, 'validateCoupon']);
 

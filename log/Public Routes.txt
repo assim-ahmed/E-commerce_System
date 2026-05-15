@@ -1,0 +1,25 @@
+# Auth
+POST   /api/register
+POST   /api/login
+
+# Categories
+GET    /api/categories
+GET    /api/categories/{id}
+GET    /api/categories/slug/{slug}
+
+# Brands
+GET    /api/brands
+GET    /api/brands/{id}
+GET    /api/brands/slug/{slug}
+
+# Products
+GET    /api/products
+GET    /api/products/featured
+GET    /api/products/slug/{slug}
+GET    /api/products/{id}
+
+# Reviews
+GET    /api/products/{id}/reviews
+
+# Coupons
+GET    /api/coupons/validate/{code}
