@@ -1,6 +1,37 @@
-🏠 ADDRESSES APIs (4 Endpoints) 
-Method	Endpoint		الوصف			الحالة	
-GET	/api/addresses		جلب كل عناوين المستخدم		✅ منجز
-POST	/api/addresses		إضافة عنوان جديد		✅ منجز
-PUT	/api/addresses/{id}	تعديل عنوان موجود		✅ منجز
-DELETE	/api/addresses/{id}	حذف عنوان			✅ منجز
+📊 ملخص سريع - Addresses APIs
+
+/api/addresses		GET
+/api/addresses/{id} 	DELETE
+
+
+Endpoint		الطريقة	يحتاج Body	يحتاج Token	الصلاحية
+
+
+/api/addresses		POST	✅ (بيانات العنوان)		✅	User
+{
+    "address_line_1": "string|required|max:255",
+    "city": "string|required|max:100",
+    "country": "string|required|max:100",
+    "postal_code": "string|nullable|max:20",
+    "phone": "string|nullable|max:20",
+    "is_default": "boolean|nullable"
+}
+
+
+/api/addresses/{id}	PUT	✅ (الحقول المطلوب تعديلها)	✅	User (عناوينه بس)
+{
+    "address_line_1": "string|sometimes|max:255",
+    "city": "string|sometimes|max:100",
+    "country": "string|sometimes|max:100",
+    "postal_code": "string|nullable|max:20",
+    "phone": "string|nullable|max:20",
+    "is_default": "boolean|nullable"
+}
+
+
+🔐 قواعد الصلاحية		
+المستخدم العادي: يقدر يشوف، يضيف، يعدل، يحذف عناوينه هو بس
+
+Admin: عنده صلاحية كاملة على كل العناوين (لو معمولة)
+
+البيانات المطلوبة: كل الحقول ماعدا is_default اختيارية

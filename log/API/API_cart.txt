@@ -6,17 +6,17 @@
 4	DELETE	/api/cart/items/{id}	حذف منتج
 5	DELETE	/api/cart/clear		تفريغ السلة	
 		
-🎯 الميزات المنفذة:
-الميزة	الحالة
-عرض السلة مع الإجماليات	✅
-إضافة منتج (مسجل/زائر)			✅
-دعم product variants		✅
-منع إضافة نفس المنتج مرتين		✅
-تحديث الكمية				✅
-حذف منتج				✅
-تفريغ السلة				✅
-التحقق من المخزون			✅
-تخزين السعر عند الإضافة			✅
-دمج سلة الزائر مع سلة المستخدم عند التسجيل	✅
-Cookie تلقائي للزوار			✅
-try-catch مع رسائل خطأ واضحة		✅
+_________________________________________________
+
+ POST	/api/cart/items		إضافة منتج	
+
+{
+    "product_id": "integer|required|exists:products,id",
+    "product_variant_id": "integer|nullable|exists:product_variants,id",
+    "quantity": "integer|required|min:1|max:100"
+}
+__________________________________________________
+PUT /api/cart/items/{id}
+{
+    "quantity": "integer|required|min:1|max:100"
+}

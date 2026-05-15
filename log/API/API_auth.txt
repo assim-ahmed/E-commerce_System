@@ -1,0 +1,9 @@
+📊 ملخص سريع
+Endpoint				الطريقة	يحتاج Body				يحتاج Token
+/api/register				POST	✅ (name, email, password)		❌
+/api/login				POST	✅ (email, password)			❌
+/api/logout				POST	❌					✅
+/api/profile				GET	❌					✅
+/api/profile				PUT	✅ (name, email, password optional)	✅
+/api/email/verification-notification	POST	❌					✅
+/api/verify-email/{id}/{hash}		GET	❌					❌ (signed URL)
