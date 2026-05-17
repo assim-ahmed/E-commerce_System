@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { 
   FiShoppingCart, 
   FiMoon, 
@@ -8,31 +8,51 @@ import {
   FiX,
   FiHome,
   FiGrid,
-  FiTag
+  FiTag,
+  FiStar
 } from 'react-icons/fi'
 import useDarkMode from '../../hooks/useDarkMode'
+import { ROUTES } from '../../utils/constants'
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { isDark, toggle } = useDarkMode()
+  const location = useLocation()
 
   const navLinks = [
-    { name: 'الرئيسية', path: '/', icon: FiHome },
-    { name: 'المنتجات', path: '/products', icon: FiGrid },
-    { name: 'التصنيفات', path: '/categories', icon: FiTag },
+    { name: 'الرئيسية', path: ROUTES.HOME, icon: FiHome },
+    { name: 'المنتجات', path: ROUTES.PRODUCTS, icon: FiGrid },
+    { name: 'التصنيفات', path: ROUTES.CATEGORIES, icon: FiTag },
+    { name: 'المميزة', path: ROUTES.FEATURED_PRODUCTS, icon: FiStar },
   ]
+
+  const getIsActive = (path) => {
+    if (path === ROUTES.HOME) {
+      return location.pathname === ROUTES.HOME
+    }
+    if (path === ROUTES.PRODUCTS) {
+      return location.pathname === ROUTES.PRODUCTS
+    }
+    if (path === ROUTES.FEATURED_PRODUCTS) {
+      return location.pathname === ROUTES.FEATURED_PRODUCTS
+    }
+    if (path === ROUTES.CATEGORIES) {
+      return location.pathname === ROUTES.CATEGORIES
+    }
+    return false
+  }
 
   return (
     <nav 
       className="sticky top-0 z-50 shadow-md transition-colors duration-300"
       style={{ backgroundColor: 'var(--color-bg-navbar)' }}
     >
-      <div className=" mx-auto px-4">
+      <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           
           {/* الشعار */}
           <Link 
-            to="/" 
+            to={ROUTES.HOME} 
             className="text-2xl font-bold transition-colors duration-300"
             style={{ color: 'var(--color-primary)' }}
           >
@@ -40,68 +60,60 @@ const Navbar = () => {
           </Link>
           
           {/* الروابط للشاشات الكبيرة */}
-          <div className="hidden md:flex items-center gap-3 md:mr-15">
-            {navLinks.map((link) => (
-              <NavLink
-                key={link.path}
-                to={link.path}
-                className={({ isActive }) => `
-                  flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300
-                  ${isActive ? 'active-link' : ''}
-                `}
-                style={({ isActive }) => ({
-                  color: isActive 
-                    ? 'var(--color-primary-dark)' 
-                    : 'var(--color-text-secondary)',
-                  backgroundColor: isActive 
-                    ? 'var(--color-primary-soft)' 
-                    : 'transparent',
-                  border: `1px solid ${isActive 
-                    ? 'var(--color-primary)' 
-                    : 'var(--color-border-light)'}`
-                })}
-                onMouseEnter={(e) => {
-                  if (!e.currentTarget.classList.contains('active-link')) {
-                    e.currentTarget.style.backgroundColor = 'var(--color-primary-soft)'
-                    e.currentTarget.style.borderColor = 'var(--color-primary)'
-                    e.currentTarget.style.color = 'var(--color-primary-dark)'
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!e.currentTarget.classList.contains('active-link')) {
-                    e.currentTarget.style.backgroundColor = 'transparent'
-                    e.currentTarget.style.borderColor = 'var(--color-border-light)'
-                    e.currentTarget.style.color = 'var(--color-text-secondary)'
-                  }
-                }}
-              >
-                <link.icon size={18} />
-                <span>{link.name}</span>
-              </NavLink>
-            ))}
+          <div className="hidden md:flex items-center gap-2">
+            {navLinks.map((link) => {
+              const isActive = getIsActive(link.path)
+              
+              return (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`
+                    flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300
+                    ${isActive ? 'bg-primary-soft text-primary-dark border border-primary' : ''}
+                  `}
+                  style={{
+                    color: isActive ? 'var(--color-primary-dark)' : 'var(--color-text-secondary)',
+                    backgroundColor: isActive ? 'var(--color-primary-soft)' : 'transparent',
+                    border: isActive ? `1px solid var(--color-primary)` : `1px solid var(--color-border-light)`,
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = 'var(--color-primary-soft)'
+                      e.currentTarget.style.borderColor = 'var(--color-primary)'
+                      e.currentTarget.style.color = 'var(--color-primary-dark)'
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = 'transparent'
+                      e.currentTarget.style.borderColor = 'var(--color-border-light)'
+                      e.currentTarget.style.color = 'var(--color-text-secondary)'
+                    }
+                  }}
+                >
+                  <link.icon size={18} />
+                  <span>{link.name}</span>
+                </Link>
+              )
+            })}
           </div>
           
           {/* الأزرار الجانبية */}
           <div className="flex items-center gap-3">
             
             {/* زر السلة */}
-            <NavLink
-              to="/cart"
-              className={({ isActive }) => `
+            <Link
+              to={ROUTES.CART}
+              className={`
                 relative p-2 rounded-lg transition-all duration-300
-                ${isActive ? 'active-link' : ''}
+                ${location.pathname === ROUTES.CART ? 'bg-primary-soft text-primary-dark border border-primary' : ''}
               `}
-              style={({ isActive }) => ({
-                backgroundColor: isActive 
-                  ? 'var(--color-primary-soft)' 
-                  : 'transparent',
-                color: isActive 
-                  ? 'var(--color-primary-dark)' 
-                  : 'var(--color-text-secondary)',
-                border: `1px solid ${isActive 
-                  ? 'var(--color-primary)' 
-                  : 'var(--color-border-light)'}`
-              })}
+              style={{
+                backgroundColor: location.pathname === ROUTES.CART ? 'var(--color-primary-soft)' : 'transparent',
+                color: location.pathname === ROUTES.CART ? 'var(--color-primary-dark)' : 'var(--color-text-secondary)',
+                border: location.pathname === ROUTES.CART ? `1px solid var(--color-primary)` : `1px solid var(--color-border-light)`,
+              }}
             >
               <FiShoppingCart size={20} />
               <span 
@@ -110,7 +122,7 @@ const Navbar = () => {
               >
                 0
               </span>
-            </NavLink>
+            </Link>
             
             {/* زر تغيير الوضع */}
             <button
@@ -119,7 +131,7 @@ const Navbar = () => {
               style={{
                 backgroundColor: 'transparent',
                 color: 'var(--color-text-secondary)',
-                border: `1px solid var(--color-border-light)`
+                border: `1px solid var(--color-border-light)`,
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = 'var(--color-primary-soft)'
@@ -137,12 +149,12 @@ const Navbar = () => {
             
             {/* زر تسجيل الدخول */}
             <Link
-              to="/login"
+              to={ROUTES.LOGIN}
               className="px-4 py-2 rounded-lg transition-all duration-300 hover:shadow-sm transform hover:-translate-y-0.5"
               style={{
                 backgroundColor: 'var(--color-primary)',
                 color: 'white',
-                border: `1px solid var(--color-primary)`
+                border: `1px solid var(--color-primary)`,
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)'
@@ -161,7 +173,7 @@ const Navbar = () => {
               style={{
                 backgroundColor: 'transparent',
                 color: 'var(--color-text-secondary)',
-                border: `1px solid var(--color-border-light)`
+                border: `1px solid var(--color-border-light)`,
               }}
             >
               {isMenuOpen ? <FiX size={20} /> : <FiMenu size={20} />}
@@ -175,53 +187,49 @@ const Navbar = () => {
             className="md:hidden py-3 mt-3 rounded-lg space-y-1"
             style={{ 
               backgroundColor: 'var(--color-bg-card)',
-              border: `1px solid var(--color-border-light)`
+              border: `1px solid var(--color-border-light)`,
             }}
           >
-            {navLinks.map((link) => (
-              <NavLink
-                key={link.path}
-                to={link.path}
-                className={({ isActive }) => `
-                  flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300
-                  ${isActive ? 'active-link' : ''}
-                `}
-                style={({ isActive }) => ({
-                  backgroundColor: isActive 
-                    ? 'var(--color-primary-soft)' 
-                    : 'transparent',
-                  color: isActive 
-                    ? 'var(--color-primary-dark)' 
-                    : 'var(--color-text-secondary)'
-                })}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <link.icon size={18} />
-                <span>{link.name}</span>
-              </NavLink>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = getIsActive(link.path)
+              
+              return (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`
+                    flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300
+                    ${isActive ? 'bg-primary-soft text-primary-dark' : ''}
+                  `}
+                  style={{
+                    backgroundColor: isActive ? 'var(--color-primary-soft)' : 'transparent',
+                    color: isActive ? 'var(--color-primary-dark)' : 'var(--color-text-secondary)',
+                  }}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <link.icon size={18} />
+                  <span>{link.name}</span>
+                </Link>
+              )
+            })}
             
             <div className="border-t my-2" style={{ borderColor: 'var(--color-border-light)' }} />
             
-            <NavLink
-              to="/cart"
-              className={({ isActive }) => `
+            <Link
+              to={ROUTES.CART}
+              className={`
                 flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300
-                ${isActive ? 'active-link' : ''}
+                ${location.pathname === ROUTES.CART ? 'bg-primary-soft text-primary-dark' : ''}
               `}
-              style={({ isActive }) => ({
-                backgroundColor: isActive 
-                  ? 'var(--color-primary-soft)' 
-                  : 'transparent',
-                color: isActive 
-                  ? 'var(--color-primary-dark)' 
-                  : 'var(--color-text-secondary)'
-              })}
+              style={{
+                backgroundColor: location.pathname === ROUTES.CART ? 'var(--color-primary-soft)' : 'transparent',
+                color: location.pathname === ROUTES.CART ? 'var(--color-primary-dark)' : 'var(--color-text-secondary)',
+              }}
               onClick={() => setIsMenuOpen(false)}
             >
               <FiShoppingCart size={18} />
               <span>السلة</span>
-            </NavLink>
+            </Link>
           </div>
         )}
       </div>
