@@ -55,13 +55,6 @@ Route::get('/coupons/validate/{code}', [CouponController::class, 'validateCoupon
 // Reviews Public Routes
 Route::get('/products/{id}/reviews', [ReviewController::class, 'productReviews']);
 
-// Test Cookie Route
-Route::get('/test-cookie', function () {
-    return response()
-        ->json(['message' => 'Cookie test'])
-        ->cookie('test_cookie', 'hello123', 60);
-});
-
 // =============================================
 // 2. PROTECTED ROUTES (Authentication + Email Verification)
 // =============================================
