@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState , useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { 
-  FiShoppingCart, 
-  FiMoon, 
+import useCartStore from '../../store/cartStore'
+import {
+  FiShoppingCart,
+  FiMoon,
   FiSun,
   FiMenu,
   FiX,
@@ -13,6 +14,8 @@ import {
 } from 'react-icons/fi'
 import useDarkMode from '../../hooks/useDarkMode'
 import { ROUTES } from '../../utils/constants'
+
+
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -42,28 +45,37 @@ const Navbar = () => {
     return false
   }
 
+  const { itemsCount, fetchCart } = useCartStore()
+
+  useEffect(() => {
+    fetchCart()
+  }, [])
+
+
+
+
   return (
-    <nav 
+    <nav
       className="sticky top-0 z-50 shadow-md transition-colors duration-300"
       style={{ backgroundColor: 'var(--color-bg-navbar)' }}
     >
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          
+
           {/* الشعار */}
-          <Link 
-            to={ROUTES.HOME} 
+          <Link
+            to={ROUTES.HOME}
             className="text-2xl font-bold transition-colors duration-300"
             style={{ color: 'var(--color-primary)' }}
           >
             بوينت
           </Link>
-          
+
           {/* الروابط للشاشات الكبيرة */}
           <div className="hidden md:flex items-center gap-2">
             {navLinks.map((link) => {
               const isActive = getIsActive(link.path)
-              
+
               return (
                 <Link
                   key={link.path}
@@ -98,10 +110,10 @@ const Navbar = () => {
               )
             })}
           </div>
-          
+
           {/* الأزرار الجانبية */}
           <div className="flex items-center gap-3">
-            
+
             {/* زر السلة */}
             <Link
               to={ROUTES.CART}
@@ -116,14 +128,14 @@ const Navbar = () => {
               }}
             >
               <FiShoppingCart size={20} />
-              <span 
+              <span
                 className="absolute -top-2 -right-2 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
                 style={{ backgroundColor: 'var(--color-danger)' }}
               >
-                0
+                {itemsCount}
               </span>
             </Link>
-            
+
             {/* زر تغيير الوضع */}
             <button
               onClick={toggle}
@@ -146,7 +158,7 @@ const Navbar = () => {
             >
               {isDark ? <FiSun size={20} /> : <FiMoon size={20} />}
             </button>
-            
+
             {/* زر تسجيل الدخول */}
             <Link
               to={ROUTES.LOGIN}
@@ -165,7 +177,7 @@ const Navbar = () => {
             >
               تسجيل الدخول
             </Link>
-            
+
             {/* زر القائمة للجوال */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -180,19 +192,19 @@ const Navbar = () => {
             </button>
           </div>
         </div>
-        
+
         {/* القائمة للجوال */}
         {isMenuOpen && (
-          <div 
+          <div
             className="md:hidden py-3 mt-3 rounded-lg space-y-1"
-            style={{ 
+            style={{
               backgroundColor: 'var(--color-bg-card)',
               border: `1px solid var(--color-border-light)`,
             }}
           >
             {navLinks.map((link) => {
               const isActive = getIsActive(link.path)
-              
+
               return (
                 <Link
                   key={link.path}
@@ -212,9 +224,9 @@ const Navbar = () => {
                 </Link>
               )
             })}
-            
+
             <div className="border-t my-2" style={{ borderColor: 'var(--color-border-light)' }} />
-            
+
             <Link
               to={ROUTES.CART}
               className={`

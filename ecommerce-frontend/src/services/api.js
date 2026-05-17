@@ -7,6 +7,8 @@ const api = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
+    withCredentials: true, 
+
 })
 
 // إضافة التوكن لكل طلب

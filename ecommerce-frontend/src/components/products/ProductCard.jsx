@@ -1,10 +1,28 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { FiShoppingCart, FiStar } from 'react-icons/fi'
+import { FiShoppingCart, FiStar, FiCheck } from 'react-icons/fi'
 import { getImageUrl, getPlaceholderImage } from '../../utils/helpers'
 import { ROUTES } from '../../utils/constants'
+import useCartStore from '../../store/cartStore'
 
 const ProductCard = ({ product }) => {
+  const [isAdding, setIsAdding] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
   const imageUrl = getImageUrl(product.images)
+  const { addToCart } = useCartStore()
+
+  const handleAddToCart = async () => {
+    setIsAdding(true)
+    
+    const result = await addToCart(product.id, 1, null)
+    
+    if (result.success) {
+      setShowSuccess(true)
+      setTimeout(() => setShowSuccess(false), 2000)
+    }
+    
+    setIsAdding(false)
+  }
 
   return (
     <div 
@@ -94,19 +112,31 @@ const ProductCard = ({ product }) => {
           </div>
           
           <button
-            className="p-2 rounded-lg transition-all duration-300 hover:scale-105"
+            onClick={handleAddToCart}
+            disabled={isAdding}
+            className="p-2 rounded-lg transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
-              backgroundColor: 'var(--color-primary)',
+              backgroundColor: showSuccess ? 'var(--color-success)' : 'var(--color-primary)',
               color: 'white',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)'
+              if (!showSuccess && !isAdding) {
+                e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)'
+              }
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--color-primary)'
+              if (!showSuccess && !isAdding) {
+                e.currentTarget.style.backgroundColor = 'var(--color-primary)'
+              }
             }}
           >
-            <FiShoppingCart size={18} />
+            {isAdding ? (
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : showSuccess ? (
+              <FiCheck size={18} />
+            ) : (
+              <FiShoppingCart size={18} />
+            )}
           </button>
         </div>
       </div>

@@ -55,48 +55,51 @@ Route::get('/coupons/validate/{code}', [CouponController::class, 'validateCoupon
 // Reviews Public Routes
 Route::get('/products/{id}/reviews', [ReviewController::class, 'productReviews']);
 
+// Cart Routes
+Route::prefix('cart')->group(function () {
+    Route::get('/', [CartController::class, 'index']);
+    Route::post('/items', [CartController::class, 'addItem']);
+    Route::put('/items/{cartItemId}', [CartController::class, 'updateItem']);
+    Route::delete('/items/{cartItemId}', [CartController::class, 'removeItem']);
+    Route::delete('/clear', [CartController::class, 'clear']);
+});
+
 // =============================================
 // 2. PROTECTED ROUTES (Authentication + Email Verification)
+
 // =============================================
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    
+
     // Auth Routes
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::put('/profile', [AuthController::class, 'updateProfile']);
     Route::post('/email/verification-notification', [AuthController::class, 'sendVerificationEmail']);
-    
+
     // Address Routes
     Route::get('/addresses', [AddressController::class, 'index']);
     Route::post('/addresses', [AddressController::class, 'store']);
     Route::put('/addresses/{id}', [AddressController::class, 'update']);
     Route::delete('/addresses/{id}', [AddressController::class, 'destroy']);
-    
-    // Cart Routes
-    Route::prefix('cart')->group(function () {
-        Route::get('/', [CartController::class, 'index']);
-        Route::post('/items', [CartController::class, 'addItem']);
-        Route::put('/items/{cartItemId}', [CartController::class, 'updateItem']);
-        Route::delete('/items/{cartItemId}', [CartController::class, 'removeItem']);
-        Route::delete('/clear', [CartController::class, 'clear']);
-    });
-    
+
+
+
     // Cart Coupon Routes
     Route::post('/cart/apply-coupon', [CouponController::class, 'applyCoupon']);
     Route::delete('/cart/coupon', [CouponController::class, 'removeCoupon']);
-    
+
     // Orders Routes
     Route::get('/orders', [OrderController::class, 'index']);
     Route::get('/orders/{id}', [OrderController::class, 'show']);
     Route::post('/orders', [OrderController::class, 'store']);
     Route::delete('/orders/{id}/cancel', [OrderController::class, 'cancel']);
-    
+
     // Reviews Routes (Authenticated users)
     Route::post('/products/{id}/reviews', [ReviewController::class, 'store']);
     Route::get('/reviews/{id}', [ReviewController::class, 'show']);
     Route::put('/reviews/{id}', [ReviewController::class, 'update']);
     Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
-    
+
     // Notifications Routes
     Route::prefix('notifications')->group(function () {
         Route::get('/', [NotificationController::class, 'index']);
@@ -107,22 +110,22 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::put('/read-all', [NotificationController::class, 'markAllAsRead']);
         Route::delete('/{id}', [NotificationController::class, 'destroy']);
     });
-    
+
     // =============================================
     // 3. ADMIN ROUTES (Authentication + Email Verification + Admin Role)
     // =============================================
     Route::middleware(['admin'])->group(function () {
-        
+
         // Category Management
         Route::post('/categories', [CategoryController::class, 'store']);
         Route::put('/categories/{id}', [CategoryController::class, 'update']);
         Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
-        
+
         // Brand Management
         Route::post('/brands', [BrandController::class, 'store']);
         Route::put('/brands/{id}', [BrandController::class, 'update']);
         Route::delete('/brands/{id}', [BrandController::class, 'destroy']);
-        
+
         // Products Management
         Route::prefix('products')->group(function () {
             Route::get('/low-stock', [ProductController::class, 'lowStock']);
@@ -131,15 +134,15 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             Route::put('/{id}', [ProductController::class, 'update']);
             Route::delete('/{id}', [ProductController::class, 'destroy']);
         });
-        
+
         // Orders Management
         Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']);
         Route::get('/admin/orders', [OrderController::class, 'adminIndex']);
-        
+
         // Reviews Management
         Route::get('/admin/reviews', [ReviewController::class, 'index']);
         Route::put('/admin/reviews/{id}/approve', [ReviewController::class, 'approve']);
-        
+
         // Coupons Management
         Route::prefix('admin')->group(function () {
             Route::get('/coupons', [CouponController::class, 'index']);
@@ -149,26 +152,26 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             Route::put('/coupons/{id}', [CouponController::class, 'update']);
             Route::delete('/coupons/{id}', [CouponController::class, 'destroy']);
         });
-        
+
         // =============================================
         // 4. DASHBOARD ROUTES (Admin Only)
         // =============================================
         Route::prefix('admin/dashboard')->group(function () {
             // Statistics
             Route::get('/stats', [DashboardController::class, 'getStats']);
-            
+
             // Sales Reports (period: daily, weekly, monthly, yearly)
             Route::get('/sales', [DashboardController::class, 'getSalesReport']);
-            
+
             // Top Selling Products
             Route::get('/top-products', [DashboardController::class, 'getTopProducts']);
-            
+
             // Recent Orders
             Route::get('/recent-orders', [DashboardController::class, 'getRecentOrders']);
-            
+
             // Inventory Summary
             Route::get('/inventory', [DashboardController::class, 'getInventorySummary']);
-            
+
             // Clear Cache (optional)
             Route::post('/clear-cache', [DashboardController::class, 'clearCache']);
         });

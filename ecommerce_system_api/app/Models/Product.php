@@ -85,7 +85,7 @@ class Product extends Model
             : $this->base_price;
     }
 
-    // Scopes
+    // Scopesz
     public function scopeFeatured($query)
     {
         return $query->where('is_featured', true);

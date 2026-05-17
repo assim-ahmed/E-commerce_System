@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage'
 import ProductsPage from './pages/ProductsPage'
 import CategoriesPage from './pages/CategoriesPage'
 import CategoryProductsPage from './pages/CategoryProductsPage'
+import CartPage from './pages/CartPage'
 import { ROUTES } from './utils/constants'
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
             <Route path={ROUTES.FEATURED_PRODUCTS} element={<ProductsPage />} />
             <Route path={ROUTES.CATEGORIES} element={<CategoriesPage />} />
             <Route path={`${ROUTES.CATEGORIES}/:id`} element={<CategoryProductsPage />} />
+            <Route path={ROUTES.CART} element={<CartPage />} />
           </Routes>
         </main>
       </div>
