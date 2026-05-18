@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage'
 import ProductsPage from './pages/ProductsPage'
 import CategoriesPage from './pages/CategoriesPage'
 import CategoryProductsPage from './pages/CategoryProductsPage'
+import AuthPage from './pages/AuthPage'
 import CartPage from './pages/CartPage'
 import { ROUTES } from './utils/constants'
 
@@ -20,6 +21,9 @@ function App() {
             <Route path={ROUTES.CATEGORIES} element={<CategoriesPage />} />
             <Route path={`${ROUTES.CATEGORIES}/:id`} element={<CategoryProductsPage />} />
             <Route path={ROUTES.CART} element={<CartPage />} />
+            <Route path={ROUTES.LOGIN} element={<AuthPage />} />
+            <Route path={ROUTES.REGISTER} element={<AuthPage />} /> 
+            
           </Routes>
         </main>
       </div>

@@ -1,6 +1,8 @@
-import { useState , useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useShallow } from 'zustand/react/shallow'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import useCartStore from '../../store/cartStore'
+import useAuthStore from '../../store/authStore'
 import {
   FiShoppingCart,
   FiMoon,
@@ -10,17 +12,35 @@ import {
   FiHome,
   FiGrid,
   FiTag,
-  FiStar
+  FiStar,
+  FiUser,
+  FiLogOut,
+  FiChevronDown
 } from 'react-icons/fi'
 import useDarkMode from '../../hooks/useDarkMode'
 import { ROUTES } from '../../utils/constants'
 
-
-
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const { isDark, toggle } = useDarkMode()
   const location = useLocation()
+  const navigate = useNavigate()
+
+  const { user, isAuthenticated, isLoggingOut, logout } = useAuthStore(
+    useShallow((state) => ({
+      user: state.user,
+      isAuthenticated: state.isAuthenticated,
+      isLoggingOut: state.isLoggingOut,
+      logout: state.logout,
+    }))
+  )
+
+  const handleLogout = async () => {
+    setIsUserMenuOpen(false)
+    await logout()
+    navigate(ROUTES.HOME)
+  }
 
   const navLinks = [
     { name: 'الرئيسية', path: ROUTES.HOME, icon: FiHome },
@@ -51,8 +71,14 @@ const Navbar = () => {
     fetchCart()
   }, [])
 
-
-
+  // إغلاق القائمة المنسدلة عند الضغط خارجها
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setIsUserMenuOpen(false)
+    }
+    document.addEventListener('click', handleClickOutside)
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [])
 
   return (
     <nav
@@ -75,7 +101,6 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-2">
             {navLinks.map((link) => {
               const isActive = getIsActive(link.path)
-
               return (
                 <Link
                   key={link.path}
@@ -128,12 +153,14 @@ const Navbar = () => {
               }}
             >
               <FiShoppingCart size={20} />
-              <span
-                className="absolute -top-2 -right-2 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
-                style={{ backgroundColor: 'var(--color-danger)' }}
-              >
-                {itemsCount}
-              </span>
+              {itemsCount > 0 && (
+                <span
+                  className="absolute -top-2 -right-2 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
+                  style={{ backgroundColor: 'var(--color-danger)' }}
+                >
+                  {itemsCount}
+                </span>
+              )}
             </Link>
 
             {/* زر تغيير الوضع */}
@@ -159,24 +186,143 @@ const Navbar = () => {
               {isDark ? <FiSun size={20} /> : <FiMoon size={20} />}
             </button>
 
-            {/* زر تسجيل الدخول */}
-            <Link
-              to={ROUTES.LOGIN}
-              className="px-4 py-2 rounded-lg transition-all duration-300 hover:shadow-sm transform hover:-translate-y-0.5"
-              style={{
-                backgroundColor: 'var(--color-primary)',
-                color: 'white',
-                border: `1px solid var(--color-primary)`,
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--color-primary)'
-              }}
-            >
-              تسجيل الدخول
-            </Link>
+            {/* قسم المستخدم */}
+            {isAuthenticated ? (
+              <div className="relative">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    if (!isLoggingOut) setIsUserMenuOpen(!isUserMenuOpen)
+                  }}
+                  disabled={isLoggingOut}
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{
+                    backgroundColor: 'var(--color-primary-soft)',
+                    color: 'var(--color-primary-dark)',
+                    border: `1px solid var(--color-border-light)`,
+                  }}
+                >
+                  {isLoggingOut ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                      <span>جاري الخروج...</span>
+                    </>
+                  ) : (
+                    <>
+                      <FiUser size={16} />
+                      <span className="max-w-[100px] truncate">{user?.name?.split(' ')[0] || 'مستخدم'}</span>
+                      <FiChevronDown size={14} className={`transition-transform duration-300 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                    </>
+                  )}
+                </button>
+
+                {/* القائمة المنسدلة - تظهر فقط عندما لا يكون في حالة خروج */}
+                {isUserMenuOpen && !isLoggingOut && (
+                  <div
+                    className="absolute left-0 mt-2 w-48 rounded-xl shadow-lg overflow-hidden z-50"
+                    style={{
+                      backgroundColor: 'var(--color-bg-card)',
+                      border: `1px solid var(--color-border-light)`,
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="py-2">
+                      <div
+                        className="px-4 py-3 border-b"
+                        style={{ borderColor: 'var(--color-border-light)' }}
+                      >
+                        <p className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
+                          {user?.name}
+                        </p>
+                        <p className="text-xs mt-1" style={{ color: 'var(--color-text-muted)' }}>
+                          {user?.email}
+                        </p>
+                      </div>
+                      
+                      <Link
+                        to={ROUTES.PROFILE}
+                        className="flex items-center gap-3 px-4 py-3 text-sm transition-colors duration-200"
+                        style={{ color: 'var(--color-text-secondary)' }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = 'var(--color-primary-soft)'
+                          e.currentTarget.style.color = 'var(--color-primary-dark)'
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent'
+                          e.currentTarget.style.color = 'var(--color-text-secondary)'
+                        }}
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <FiUser size={16} />
+                        <span>الملف الشخصي</span>
+                      </Link>
+                      
+                      <Link
+                        to={ROUTES.ORDERS}
+                        className="flex items-center gap-3 px-4 py-3 text-sm transition-colors duration-200"
+                        style={{ color: 'var(--color-text-secondary)' }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = 'var(--color-primary-soft)'
+                          e.currentTarget.style.color = 'var(--color-primary-dark)'
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent'
+                          e.currentTarget.style.color = 'var(--color-text-secondary)'
+                        }}
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <FiGrid size={16} />
+                        <span>طلباتي</span>
+                      </Link>
+                      
+                      <div className="border-t my-1" style={{ borderColor: 'var(--color-border-light)' }} />
+                      
+                      <button
+                        onClick={handleLogout}
+                        disabled={isLoggingOut}
+                        className="flex items-center gap-3 px-4 py-3 text-sm transition-colors duration-200 w-full text-right disabled:opacity-50"
+                        style={{ color: 'var(--color-danger)' }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = 'var(--color-danger-bg)'
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent'
+                        }}
+                      >
+                        {isLoggingOut ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                            <span>جاري الخروج...</span>
+                          </>
+                        ) : (
+                          <>
+                            <FiLogOut size={16} />
+                            <span>تسجيل خروج</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                to={ROUTES.LOGIN}
+                className="px-4 py-2 rounded-lg transition-all duration-300 hover:shadow-sm transform hover:-translate-y-0.5"
+                style={{
+                  backgroundColor: 'var(--color-primary)',
+                  color: 'white',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--color-primary)'
+                }}
+              >
+                تسجيل الدخول
+              </Link>
+            )}
 
             {/* زر القائمة للجوال */}
             <button
@@ -193,7 +339,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* القائمة للجوال */}
+        {/* القائمة للجوال - باقي الكود كما هو */}
         {isMenuOpen && (
           <div
             className="md:hidden py-3 mt-3 rounded-lg space-y-1"
@@ -204,7 +350,6 @@ const Navbar = () => {
           >
             {navLinks.map((link) => {
               const isActive = getIsActive(link.path)
-
               return (
                 <Link
                   key={link.path}
@@ -241,7 +386,84 @@ const Navbar = () => {
             >
               <FiShoppingCart size={18} />
               <span>السلة</span>
+              {itemsCount > 0 && (
+                <span
+                  className="text-xs rounded-full px-2 py-0.5"
+                  style={{
+                    backgroundColor: 'var(--color-danger)',
+                    color: 'white',
+                  }}
+                >
+                  {itemsCount}
+                </span>
+              )}
             </Link>
+
+            {isAuthenticated ? (
+              <>
+                <div className="border-t my-2" style={{ borderColor: 'var(--color-border-light)' }} />
+                <div
+                  className="px-4 py-3"
+                  style={{ borderBottom: `1px solid var(--color-border-light)` }}
+                >
+                  <p className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
+                    {user?.name}
+                  </p>
+                  <p className="text-xs mt-1" style={{ color: 'var(--color-text-muted)' }}>
+                    {user?.email}
+                  </p>
+                </div>
+                <Link
+                  to={ROUTES.PROFILE}
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300"
+                  style={{ color: 'var(--color-text-secondary)' }}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <FiUser size={18} />
+                  <span>الملف الشخصي</span>
+                </Link>
+                <Link
+                  to={ROUTES.ORDERS}
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300"
+                  style={{ color: 'var(--color-text-secondary)' }}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <FiGrid size={18} />
+                  <span>طلباتي</span>
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 w-full text-right disabled:opacity-50"
+                  style={{ color: 'var(--color-danger)' }}
+                >
+                  {isLoggingOut ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                      <span>جاري الخروج...</span>
+                    </>
+                  ) : (
+                    <>
+                      <FiLogOut size={18} />
+                      <span>تسجيل خروج</span>
+                    </>
+                  )}
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="border-t my-2" style={{ borderColor: 'var(--color-border-light)' }} />
+                <Link
+                  to={ROUTES.LOGIN}
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300"
+                  style={{ color: 'var(--color-primary)' }}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <FiUser size={18} />
+                  <span>تسجيل الدخول</span>
+                </Link>
+              </>
+            )}
           </div>
         )}
       </div>
