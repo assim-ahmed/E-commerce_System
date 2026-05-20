@@ -15,7 +15,8 @@ import {
   FiStar,
   FiUser,
   FiLogOut,
-  FiChevronDown
+  FiChevronDown,
+  FiBarChart2
 } from 'react-icons/fi'
 import useDarkMode from '../../hooks/useDarkMode'
 import { ROUTES } from '../../utils/constants'
@@ -41,6 +42,9 @@ const Navbar = () => {
     await logout()
     navigate(ROUTES.HOME)
   }
+
+  // التحقق إذا كان المستخدم أدمن
+  const isAdmin = user?.role === 'admin'
 
   const navLinks = [
     { name: 'الرئيسية', path: ROUTES.HOME, icon: FiHome },
@@ -216,7 +220,7 @@ const Navbar = () => {
                   )}
                 </button>
 
-                {/* القائمة المنسدلة - تظهر فقط عندما لا يكون في حالة خروج */}
+                {/* القائمة المنسدلة */}
                 {isUserMenuOpen && !isLoggingOut && (
                   <div
                     className="absolute left-0 mt-2 w-48 rounded-xl shadow-lg overflow-hidden z-50"
@@ -238,6 +242,26 @@ const Navbar = () => {
                           {user?.email}
                         </p>
                       </div>
+                      
+                      {isAdmin && (
+                        <Link
+                          to={ROUTES.ADMIN_DASHBOARD}
+                          className="flex items-center gap-3 px-4 py-3 text-sm transition-colors duration-200"
+                          style={{ color: 'var(--color-text-secondary)' }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = 'var(--color-primary-soft)'
+                            e.currentTarget.style.color = 'var(--color-primary-dark)'
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'transparent'
+                            e.currentTarget.style.color = 'var(--color-text-secondary)'
+                          }}
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          <FiBarChart2 size={16} />
+                          <span>لوحة التحكم</span>
+                        </Link>
+                      )}
                       
                       <Link
                         to={ROUTES.PROFILE}
@@ -339,7 +363,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* القائمة للجوال - باقي الكود كما هو */}
+        {/* القائمة للجوال */}
         {isMenuOpen && (
           <div
             className="md:hidden py-3 mt-3 rounded-lg space-y-1"
@@ -413,6 +437,17 @@ const Navbar = () => {
                     {user?.email}
                   </p>
                 </div>
+                {isAdmin && (
+                  <Link
+                    to={ROUTES.ADMIN_DASHBOARD}
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300"
+                    style={{ color: 'var(--color-text-secondary)' }}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <FiBarChart2 size={18} />
+                    <span>لوحة التحكم</span>
+                  </Link>
+                )}
                 <Link
                   to={ROUTES.PROFILE}
                   className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300"
