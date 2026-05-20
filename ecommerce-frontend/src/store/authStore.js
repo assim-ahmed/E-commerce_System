@@ -34,11 +34,7 @@ const useAuthStore = create(
                         error: null,
                     })
 
-                    // مسح السلة المحلية أولاً
-                    if (resetCart) {
-                        resetCart()
-                    }
-
+                
                     // ثم جلب السلة الجديدة من الخادم
                     if (fetchCart) {
                         await fetchCart()

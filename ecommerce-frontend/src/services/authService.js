@@ -5,7 +5,7 @@ const authService = {
   // تسجيل الدخول
   login: async (email, password) => {
     try {
-      const response = await api.post(`${API_URL}/login`, { email, password })
+      const response = await api.post(`${API_URL}/login`, {email, password})
       return {
         success: response.data.success,
         data: response.data.data,

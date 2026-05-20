@@ -39,9 +39,9 @@ class AuthService implements AuthServiceInterface
             return null;
         }
         
-        if (!$user->hasVerifiedEmail()) {
-            return ['error' => 'email_not_verified'];
-        }
+        // if (!$user->hasVerifiedEmail()) {
+        //     return ['error' => 'email_not_verified'];
+        // }
         
         if (!$user->is_active) {
             return ['error' => 'account_deactivated'];

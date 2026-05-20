@@ -83,7 +83,6 @@ class CartRepository implements CartRepositoryInterface
             if (!$userCart) {
                 // تحويل سلة الزائر إلى سلة مستخدم
                 $guestCart->user_id = $userId;
-                $guestCart->cookie_id = null;
                 $guestCart->save();
                 return;
             }
@@ -104,7 +103,7 @@ class CartRepository implements CartRepositoryInterface
                 }
             }
 
-            $guestCart->delete();
+            // $guestCart->delete();
         });
     }
 

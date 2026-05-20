@@ -23,7 +23,6 @@ function App() {
             <Route path={ROUTES.CART} element={<CartPage />} />
             <Route path={ROUTES.LOGIN} element={<AuthPage />} />
             <Route path={ROUTES.REGISTER} element={<AuthPage />} /> 
-            
           </Routes>
         </main>
       </div>

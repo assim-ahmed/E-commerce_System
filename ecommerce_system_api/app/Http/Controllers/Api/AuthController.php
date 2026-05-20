@@ -65,9 +65,9 @@ class AuthController extends Controller
             ], 403);
         }
 
-      
+    
+        $cookieId = $request->cookie('cart_cookie') ?? false;
 
-        $cookieId = $request->cookie('cart_cookie');
         if ($cookieId) {
             // ✅ خد user_id من $result
             $userId = $result['user']['id'] ?? null; // حسب شكل الـ $result
