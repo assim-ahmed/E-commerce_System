@@ -17,7 +17,9 @@ const useAuthStore = create(
             login: async (email, password, rememberMe = false, fetchCart) => {
                 set({ isLoading: true, error: null })
 
-                const result = await authService.login(email, password)
+                const result = await authService.login(email, password);
+                console.log(result.data);
+                
 
                 if (result.success) {
                     const { user, token } = result.data

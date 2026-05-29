@@ -7,6 +7,8 @@ import CategoryProductsPage from './pages/CategoryProductsPage'
 import AuthPage from './pages/AuthPage'
 import CartPage from './pages/CartPage'
 import { ROUTES } from './utils/constants'
+import ProtectedRoute from './components/common/ProtectedPage' 
+import Dashboard from './pages/Dashboard'
 
 function App() {
   return (
@@ -23,6 +25,12 @@ function App() {
             <Route path={ROUTES.CART} element={<CartPage />} />
             <Route path={ROUTES.LOGIN} element={<AuthPage />} />
             <Route path={ROUTES.REGISTER} element={<AuthPage />} /> 
+            <Route path='' element={<ProductsPage> </ProductsPage>} />
+            <Route path={ROUTES.ADMIN_DASHBOARD} element={<ProtectedRoute allowedRoles={['admin']}>
+              <Dashboard />
+            </ProtectedRoute>} />
+
+
           </Routes>
         </main>
       </div>
