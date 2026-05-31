@@ -1,4 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { ROUTES } from './utils/constants'
+
+
 import Navbar from './components/common/Navbar'
 import HomePage from './pages/HomePage'
 import ProductsPage from './pages/ProductsPage'
@@ -6,8 +9,11 @@ import CategoriesPage from './pages/CategoriesPage'
 import CategoryProductsPage from './pages/CategoryProductsPage'
 import AuthPage from './pages/AuthPage'
 import CartPage from './pages/CartPage'
-import { ROUTES } from './utils/constants'
-import ProtectedRoute from './components/common/ProtectedPage' 
+
+import ProtectedRoute from './components/common/ProtectedPage'
+import GuestPage from './components/common/GuestPage'
+
+// _____________ لإضافة صفحة لوحة التحكم للمسؤولين فقط ____________; 
 import Dashboard from './pages/Dashboard'
 
 function App() {
@@ -23,14 +29,16 @@ function App() {
             <Route path={ROUTES.CATEGORIES} element={<CategoriesPage />} />
             <Route path={`${ROUTES.CATEGORIES}/:id`} element={<CategoryProductsPage />} />
             <Route path={ROUTES.CART} element={<CartPage />} />
-            <Route path={ROUTES.LOGIN} element={<AuthPage />} />
-            <Route path={ROUTES.REGISTER} element={<AuthPage />} /> 
+            <Route path={ROUTES.LOGIN} element={<GuestPage>
+              <AuthPage />
+            </GuestPage>} />
+            <Route path={ROUTES.REGISTER} element={<GuestPage>
+              <AuthPage />
+            </GuestPage>} />
             <Route path='' element={<ProductsPage> </ProductsPage>} />
             <Route path={ROUTES.ADMIN_DASHBOARD} element={<ProtectedRoute allowedRoles={['admin']}>
               <Dashboard />
             </ProtectedRoute>} />
-
-
           </Routes>
         </main>
       </div>
